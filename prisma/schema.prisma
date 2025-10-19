@@ -1,0 +1,175 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// TIPE RIWAYAT
+enum TipeRiwayat {
+  MASUK
+  KELUAR
+  OPNAME
+}
+
+// TIPE BARANG
+enum TipeBarang {
+  BARANG // Barang fisik yang punya stok (Kertas, Tinta)
+  JASA   // Layanan yang tidak punya stok (Fotocopy, Jilid)
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+
+// MODEL USER
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String
+  role          Role      @default(USER)
+
+  accounts    Account[]
+  sessions    Session[]
+  RiwayatStok RiwayatStok[] // User yg mencatat riwayat
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// MODEL AKUN
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+// MODEL SESSION
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// MODEL VERIFICATION TOKEN
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+// MODEL PEMASOK
+model Supplier {
+  id     String   @id @default(cuid())
+  nama   String   @unique
+  kontak String? 
+  alamat String?
+
+  RiwayatStok RiwayatStok[]
+}
+
+// MODEL KATEGORI
+model Kategori {
+  id     String   @id @default(cuid())
+  nama   String   @unique
+  Barang Barang[]
+}
+
+// MODEL BARANG
+model Barang {
+  id        String   @id @default(cuid())
+  nama      String   @unique
+  deskripsi String?
+
+  tipe      TipeBarang @default(BARANG)
+
+  stok      Int @default(0) // Stok hanya berlaku jika tipe == BARANG
+  satuan    String // "pcs", "rim", "lembar", "jasa"
+  hargaBeli Int @default(0) // Modal (tidak berlaku untuk JASA)
+  hargaJual Int @default(0) // Harga jual
+
+  kategoriId String
+  kategori   Kategori @relation(fields: [kategoriId], references: [id])
+
+  RiwayatStok RiwayatStok[]
+  
+  PenjualanDetail PenjualanDetail[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// MODEL RIWAYAT STOK
+model RiwayatStok {
+  id          String      @id @default(cuid())
+  tipe        TipeRiwayat
+  jumlah      Int
+  stokSebelum Int
+  stokSesudah Int
+  catatan     String?
+  createdAt   DateTime    @default(now())
+
+  barangId String
+  barang   Barang @relation(fields: [barangId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  
+  supplierId String?
+  supplier   Supplier? @relation(fields: [supplierId], references: [id])
+}
+
+
+// MODEL PENJUALAN STRUK
+model Penjualan {
+  id        String   @id @default(cuid())
+  total     Int // Total nilai struk ini
+  dibayar   Int @default(0) // Jumlah uang dari customer
+  kembalian Int @default(0) // total - dibayar
+  catatan   String?
+  createdAt DateTime @default(now())
+
+  detail PenjualanDetail[]
+}
+
+// MODEL DETAIL PENJUALAN
+model PenjualanDetail {
+  id          String @id @default(cuid())
+  jumlah      Int    // 2 pcs
+  hargaSatuan Int    // Harga jual per satuan
+  subTotal    Int    // jumlah * hargaSatuan
+
+  penjualanId String // relasasi ke penjualan struk
+  penjualan   Penjualan @relation(fields: [penjualanId], references: [id], onDelete: Cascade)
+
+  // Relasi ke barang/jasa yang dijual
+  barangId String
+  barang   Barang @relation(fields: [barangId], references: [id])
+}
