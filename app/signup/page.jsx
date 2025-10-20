@@ -5,12 +5,14 @@ import { useForm } from "react-hook-form";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useToaster } from "@/providers/ToasterProvider";
 
 export default function SignUpPage() {
   const [type, setType] = useState("password");
   const [errorMessage, setErrorMessage] = useState(null);
 
   const router = useRouter();
+  const toaster = useToaster();
 
   const {
     register,
@@ -33,12 +35,35 @@ export default function SignUpPage() {
       if (!response.ok) {
         const errorState = await response.json();
         setErrorMessage(errorState.message);
+
+        toaster.current?.show({
+          title: "Error",
+          message: errorState.message,
+          variant: "error",
+          duration: 5000,
+          position: "top-center",
+        });
+        return;
       }
+
+      toaster.current?.show({
+        title: "Berhasil",
+        message: "Pendaftaran berhasil!",
+        variant: "success",
+        duration: 5000,
+        position: "top-center",
+      });
 
       // jika berhasil arahkan ke dashboard
       router.push("/dashboard");
     } catch (error) {
-      console.log(error);
+      toaster.current?.show({
+        title: "Error",
+        message: String(error),
+        variant: "error",
+        duration: 5000,
+        position: "top-center",
+      });
     }
   };
 
@@ -99,12 +124,12 @@ export default function SignUpPage() {
             />
             {type === "password" ? (
               <IoEyeOffOutline
-                className="absolute right-4 top-9 cursor-pointer"
+                className="absolute right-4 top-8 cursor-pointer size-5"
                 onClick={() => setType("text")}
               />
             ) : (
               <IoEyeOutline
-                className="absolute right-4 top-9 cursor-pointer"
+                className="absolute right-4 top-8 cursor-pointer size-5"
                 onClick={() => setType("password")}
               />
             )}
@@ -125,12 +150,12 @@ export default function SignUpPage() {
             />
             {type === "password" ? (
               <IoEyeOffOutline
-                className="absolute right-4 top-9 cursor-pointer"
+                className="absolute right-4 top-8 cursor-pointer size-5"
                 onClick={() => setType("text")}
               />
             ) : (
               <IoEyeOutline
-                className="absolute right-4 top-9 cursor-pointer"
+                className="absolute right-4 top-8 cursor-pointer size-5"
                 onClick={() => setType("password")}
               />
             )}

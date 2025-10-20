@@ -1,5 +1,12 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import AuthProvider from "@/providers/AuthProvider";
+import { ToasterProvider } from "@/providers/ToasterProvider";
+import {
+  SidebarBody,
+  SidebarLink,
+  SidebarWrapper,
+} from "@/components/ui/sidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,7 +29,23 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <AuthProvider>
+          <ToasterProvider>
+            <div className="flex h-screen">
+              {/* Sidebar */}
+              <SidebarWrapper>
+                <SidebarBody>
+                  <div className="flex flex-col gap-2 justify-between">
+                    <SidebarLink />
+                  </div>
+                </SidebarBody>
+              </SidebarWrapper>
+
+              {/* Konten utama yang mengisi sisa ruang */}
+              <main className="flex-1 p-6 overflow-y-auto">{children}</main>
+            </div>
+          </ToasterProvider>
+        </AuthProvider>
       </body>
     </html>
   );
