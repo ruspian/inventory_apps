@@ -11,7 +11,7 @@ import { useForm } from "react-hook-form";
 import { useToaster } from "@/providers/ToasterProvider";
 // import { formatToYyyyMmDd } from "@/lib/formatTanggal";
 
-const TambahDataBarang = ({ open, setOpen }) => {
+const TambahDataBarang = ({ open, setOpen, kategoriData }) => {
   const toaster = useToaster();
   const { register, handleSubmit, reset } = useForm();
 
@@ -97,75 +97,128 @@ const TambahDataBarang = ({ open, setOpen }) => {
             {/* tanggal */}
             <div>
               <input
-                {...register("tanggal")}
+                {...register("kode", { required: true })}
                 className="border rounded-sm p-2 w-full"
-                placeholder="Masukkan Tanggal"
-                type="date"
+                placeholder="Kode Barang"
               />
             </div>
 
             {/* nama */}
             <div>
+              <input
+                {...register("nama")}
+                className="border rounded-sm p-2 w-full"
+                placeholder="Nama Barang"
+              />
+            </div>
+
+            {/* deskripsi */}
+            <div>
+              <input
+                {...register("deskripsi")}
+                className="border rounded-sm p-2 w-full"
+                placeholder="Deskripsi Barang"
+              />
+            </div>
+
+            {/* tipe */}
+            <div>
               <select
-                {...register("siswaId")}
+                {...register("tipe")}
                 className="border rounded-sm p-2 w-full"
               >
                 <option value="" className="text-gray-400">
-                  Pilih Siswa
+                  Pilih Tipe Barang
                 </option>
                 <option value="1" className="text-gray-400">
-                  Tes
+                  Barang
                 </option>
                 <option value="1" className="text-gray-400">
-                  Tes
-                </option>
-                <option value="1" className="text-gray-400">
-                  Tes
-                </option>
-                <option value="1" className="text-gray-400">
-                  Tes
+                  Jasa
                 </option>
               </select>
             </div>
 
-            {/* uraian */}
+            {/* Kategori */}
+            <div>
+              <select
+                {...register("kategoriId")}
+                className="border rounded-sm p-2 w-full"
+              >
+                <option value="" className="text-gray-400">
+                  Pilih Kategori
+                </option>
+                {kategoriData.length > 0 &&
+                  kategoriData.map((kategori) => (
+                    <option key={kategori.id} value={kategori.id}>
+                      {kategori.nama}
+                    </option>
+                  ))}
+              </select>
+            </div>
+
+            {/* satuan */}
+            <div>
+              <select
+                {...register("satuan")}
+                className="border rounded-sm p-2 w-full"
+              >
+                <option value="" className="text-gray-400">
+                  Pilih Satuan
+                </option>
+                <option value="pcs" className="text-gray-400">
+                  Pcs
+                </option>
+                <option value="lembar" className="text-gray-400">
+                  Lembar
+                </option>
+                <option value="rim" className="text-gray-400">
+                  Rim
+                </option>
+                <option value="jasa" className="text-gray-400">
+                  Jasa
+                </option>
+                <option value="pack" className="text-gray-400">
+                  Pack
+                </option>
+                <option value="Btl" className="text-gray-400">
+                  Botol
+                </option>
+              </select>
+            </div>
+
+            {/* stok */}
             <div>
               <input
-                {...register("uraian_kejadian")}
+                {...register("stok")}
                 className="border rounded-sm p-2 w-full"
-                placeholder="Masukkan Uraian Kejadian"
+                placeholder="Stok Barang"
               />
             </div>
 
             {/* tanggapan siswa */}
             <div>
               <input
-                {...register("tanggapan_siswa")}
+                {...register("harga_beli")}
                 className="border rounded-sm p-2 w-full"
-                placeholder="Masukkan Tanggapan Siswa"
+                placeholder="Harga Beli"
               />
             </div>
 
             {/* arahan wali */}
             <div>
               <input
-                {...register("arahan")}
+                {...register("harga_jual")}
                 className="border rounded-sm p-2 w-full"
-                placeholder="Masukkan arahan wali kelas"
-              />
-            </div>
-
-            {/* Kesepakatan */}
-            <div>
-              <input
-                {...register("kesepakatan")}
-                className="border rounded-sm p-2 w-full"
-                placeholder="Masukkan kesepakatan"
+                placeholder="Harga Jual"
               />
             </div>
 
             {/* tombol simpan */}
-            <Button className="cursor-pointer" type="submit">
+            <Button
+              className="cursor-pointer bg-emerald-500 text-white font-semibold hover:bg-emerald-600"
+              type="submit"
+            >
               Simpan
             </Button>
           </form>

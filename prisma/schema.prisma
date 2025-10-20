@@ -106,7 +106,7 @@ model Barang {
   id        String   @id @default(cuid())
   nama      String   @unique
   deskripsi String?
-  kodeBarang String?  @unique
+  kodeBarang String  @unique
 
   tipe      TipeBarang @default(BARANG)
 
