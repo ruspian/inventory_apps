@@ -8,16 +8,25 @@ import { LogOut, Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { Button } from "../ui/button";
 import { signOut } from "next-auth/react";
-import {
-  ClipboardList,
-  Drama,
-  FileCheck,
-  LayoutDashboard,
-  Sheet,
-  ShieldCheck,
-  SquareUser,
-} from "lucide-react";
+import { ClipboardList, FileCheck, ShieldCheck } from "lucide-react";
 import Image from "next/image";
+import { IoAlbumsOutline, IoCartOutline } from "react-icons/io5";
+import { MdOutlineSpaceDashboard } from "react-icons/md";
+import {
+  CiBank,
+  CiBarcode,
+  CiBoxes,
+  CiBoxList,
+  CiDeliveryTruck,
+  CiGrid31,
+  CiShop,
+  CiShoppingTag,
+  CiSignpostDuo1,
+  CiSquareChevLeft,
+  CiUser,
+  CiViewList,
+} from "react-icons/ci";
+import { FaRegBuilding } from "react-icons/fa";
 
 const SidebarContext = createContext(undefined);
 
@@ -138,37 +147,53 @@ export const SidebarLink = ({ className, ...props }) => {
     {
       label: "Dashboard",
       href: "/dashboard",
-      icon: <LayoutDashboard size={30} strokeWidth={2.25} />,
+      icon: <CiGrid31 size={30} />,
     },
     {
-      label: "Data Siswa",
-      href: "/siswa",
-      icon: <SquareUser size={30} strokeWidth={2.25} />,
+      label: "Kasir",
+      href: "/kasir",
+      icon: <CiBarcode size={30} />,
     },
     {
-      label: "Rekap Absensi",
-      href: "/rekap",
-      icon: <Sheet size={30} strokeWidth={2.25} />,
+      label: "Data Barang",
+      href: "/barang",
+      icon: <CiBoxes size={30} />,
     },
     {
-      label: "Bakat & Minat",
-      href: "/bakat-minat",
-      icon: <Drama size={30} strokeWidth={2.25} />,
+      label: "Data Category",
+      href: "/kategori",
+      icon: <CiShoppingTag size={30} />,
     },
     {
-      label: "Pembinaan Wali",
-      href: "/pembinaan-wali",
-      icon: <ClipboardList size={30} strokeWidth={2.25} />,
+      label: "Data Pemasok",
+      href: "/pemasok",
+      icon: <CiShop size={30} />,
     },
     {
-      label: "Pembinaan Kasus",
-      href: "/pembinaan-kasus",
-      icon: <FileCheck size={30} strokeWidth={2.25} />,
+      label: "Stok Masuk",
+      href: "/stok-masuk",
+      icon: <CiDeliveryTruck size={30} />,
+    },
+
+    {
+      label: "Stok Opname",
+      href: "/opname",
+      icon: <CiBoxList size={30} />,
     },
     {
-      label: "Inventaris",
-      href: "/inventaris",
-      icon: <ShieldCheck size={30} strokeWidth={2.25} />,
+      label: "Laporan Penjualan",
+      href: "/laporan",
+      icon: <CiViewList size={30} />,
+    },
+    {
+      label: "Riwayat Stok",
+      href: "/riwayat",
+      icon: <CiSignpostDuo1 size={30} />,
+    },
+    {
+      label: "Manajemen User",
+      href: "/user",
+      icon: <CiUser size={30} />,
     },
   ];
   return (
@@ -251,32 +276,30 @@ export const SidebarLink = ({ className, ...props }) => {
         </div>
       </div>
 
-      <div className="">
-        <Button
-          onClick={() => signOut({ callbackUrl: "/" })}
-          variant="ghost"
-          className={cn(
-            "flex items-center text-neutral-900 dark:text-neutral-50 justify-start gap-2 group/sidebar py-2 rounded-sm",
-            className
-          )}
-          {...props}
+      <Button
+        onClick={() => signOut({ callbackUrl: "/" })}
+        variant="ghost"
+        className={cn(
+          "flex items-center text-neutral-900 dark:text-neutral-50 justify-start gap-2 group/sidebar py-2 rounded-sm",
+          className
+        )}
+        {...props}
+      >
+        <CiSquareChevLeft size={26} />
+        <motion.span
+          animate={{
+            display: animate
+              ? open
+                ? "inline-block"
+                : "none"
+              : "inline-block",
+            opacity: animate ? (open ? 1 : 0) : 1,
+          }}
+          className={`text-slate-900 dark:text-slate-50 text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0`}
         >
-          <LogOut size={26} strokeWidth={2.25} />
-          <motion.span
-            animate={{
-              display: animate
-                ? open
-                  ? "inline-block"
-                  : "none"
-                : "inline-block",
-              opacity: animate ? (open ? 1 : 0) : 1,
-            }}
-            className={`text-slate-900 dark:text-slate-50 text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0`}
-          >
-            Keluar
-          </motion.span>
-        </Button>
-      </div>
+          Keluar
+        </motion.span>
+      </Button>
     </div>
   );
 };
