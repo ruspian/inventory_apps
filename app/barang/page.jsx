@@ -8,12 +8,12 @@ import { Button } from "@/components/ui/button";
 import { getBarang, getKategori } from "@/lib/data";
 import { useToaster } from "@/providers/ToasterProvider";
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import { MdModeEdit, MdOutlineAddBox } from "react-icons/md";
 
 const DataBarangPage = () => {
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
   const [kategoriData, setKategoriData] = useState([]);
   const [dataBarang, setDataBarang] = useState([]);
 
@@ -64,6 +64,8 @@ const DataBarangPage = () => {
           dataBarang={dataBarang}
           openEdit={openEdit}
           setOpenEdit={setOpenEdit}
+          openDelete={openDelete}
+          setOpenDelete={setOpenDelete}
           icon={<MdModeEdit className="size-4" />}
           kategoriData={kategoriData}
           toaster={toaster}

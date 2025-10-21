@@ -198,3 +198,51 @@ export const PUT = async (req) => {
     );
   }
 };
+
+// HAPUS DATA BARANG
+export const DELETE = async (req) => {
+  const session = await auth();
+
+  // pastikan user sudah login dan role admin
+  if (!session || session.user.role !== "ADMIN") {
+    return NextResponse.json(
+      { message: "Anda tidak memiliki akses!" },
+      { status: 401 }
+    );
+  }
+
+  try {
+    // ambil data dari body
+    const body = await req.json();
+
+    const { id } = body;
+
+    // cari barang berdasarkan id
+    const deleteBarang = await prisma.barang.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    // jika id barang tidak ditemukan
+    if (!deleteBarang) {
+      return NextResponse.json(
+        { message: "Barang tidak ditemukan!" },
+        { status: 404 }
+      );
+    }
+
+    // kembalikan response berhasil
+    return NextResponse.json(
+      { deleteBarang, message: "Barang berhasil dihapus!" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.log("gagal hapus barang", error);
+
+    return NextResponse.json(
+      { message: "Kesalahan Pada Server!" },
+      { status: 500 }
+    );
+  }
+};

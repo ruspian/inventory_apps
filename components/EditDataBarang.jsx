@@ -116,9 +116,7 @@ const EditDataBarang = ({
     <div className="flex gap-2 justify-center">
       <MorphingPopover open={open} onOpenChange={setOpen}>
         <MorphingPopoverTrigger asChild>
-          <Button variant="outline">
-            <SquarePlus size={16} />
-          </Button>
+          {/* <Button variant="default"><SquarePlus size={16} /></Button> */}
         </MorphingPopoverTrigger>
 
         <MorphingPopoverContent>
