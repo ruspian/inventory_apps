@@ -8,16 +8,40 @@ import {
   MorphingPopoverTrigger,
 } from "@/components/ui/morphing-popover";
 import { useForm } from "react-hook-form";
+import { useEffect } from "react";
 
-const TambahDataBarang = ({
+const EditDataBarang = ({
   open,
   setOpen,
   kategoriData,
   onSuccess,
   toaster,
+  idBarang,
+  dataBarang,
 }) => {
   const { register, handleSubmit, reset } = useForm();
 
+  // cari barang berdasarkan id
+  const barang = dataBarang.find((barang) => barang.id === idBarang);
+
+  // isi form dengan data barang sesuai id
+  useEffect(() => {
+    if (barang) {
+      reset({
+        kategoriId: barang.kategoriId,
+        nama: barang.nama,
+        stok: barang.stok,
+        deskripsi: barang.deskripsi,
+        kode: barang.kodeBarang,
+        harga_beli: barang.hargaBeli,
+        harga_jual: barang.hargaJual,
+        tipe: barang.tipe,
+        satuan: barang.satuan,
+      });
+    }
+  }, [barang, reset]);
+
+  //   fungsi submit
   const onSubmit = async (data) => {
     const payload = {
       kategoriId: data.kategoriId,
@@ -35,11 +59,14 @@ const TambahDataBarang = ({
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/barang`,
         {
-          method: "POST",
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(payload),
+          body: JSON.stringify({
+            id: idBarang,
+            ...payload,
+          }),
         }
       );
 
@@ -75,8 +102,6 @@ const TambahDataBarang = ({
         onSuccess();
       }
     } catch (error) {
-      console.log(error);
-
       toaster.current?.show({
         title: "Kesalahan!",
         message: String(error) || "Gagal menambah data barang",
@@ -97,7 +122,7 @@ const TambahDataBarang = ({
         </MorphingPopoverTrigger>
 
         <MorphingPopoverContent>
-          <h2 className="text-lg font-semibold mb-4">Tambah Barang</h2>
+          <h2 className="text-lg font-semibold mb-4">Edit Barang</h2>
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-4"
@@ -227,7 +252,7 @@ const TambahDataBarang = ({
               className="cursor-pointer bg-emerald-500 text-white font-semibold hover:bg-emerald-600"
               type="submit"
             >
-              Simpan
+              Edit
             </Button>
           </form>
         </MorphingPopoverContent>
@@ -236,4 +261,4 @@ const TambahDataBarang = ({
   );
 };
 
-export default TambahDataBarang;
+export default EditDataBarang;
