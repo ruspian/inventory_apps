@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { SquarePlus } from "lucide-react";
 import {
   MorphingPopover,
   MorphingPopoverContent,
@@ -91,9 +90,9 @@ const TambahDataBarang = ({
     <div className="flex gap-2 justify-center">
       <MorphingPopover open={open} onOpenChange={setOpen}>
         <MorphingPopoverTrigger asChild>
-          <Button variant="outline">
+          {/* <Button variant="outline">
             <SquarePlus size={16} />
-          </Button>
+          </Button> */}
         </MorphingPopoverTrigger>
 
         <MorphingPopoverContent>

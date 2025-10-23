@@ -71,10 +71,18 @@ const DeleteBarang = ({
           <h2 className="text-lg font-semibold mb-4">Hapus {barang?.nama}?</h2>
 
           <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setOpen(false)}>
+            <Button
+              className="cursor-pointer hover:bg-neutral-300"
+              variant="outline"
+              onClick={() => setOpen(false)}
+            >
               Batal
             </Button>
-            <Button variant="destructive" onClick={handleDelete}>
+            <Button
+              variant="destructive"
+              className="cursor-pointer hover:bg-red-700 text-white"
+              onClick={handleDelete}
+            >
               Hapus
             </Button>
           </div>
