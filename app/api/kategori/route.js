@@ -115,3 +115,52 @@ export const PUT = async (req) => {
     );
   }
 };
+
+// HAPUS KATEGORI
+export const DELETE = async (req) => {
+  const session = await auth();
+
+  if (!session || session.user.role !== "ADMIN") {
+    return NextResponse.json(
+      { message: "Anda tidak memiliki akses!" },
+      { status: 401 }
+    );
+  }
+
+  try {
+    const body = await req.json();
+
+    // destructure id dari body
+    const { id } = body;
+
+    // cari kategori berdasarkan id dan hapus
+    const deleteKategori = await prisma.kategori.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    // jika id kategori tidak ditemukan
+    if (!deleteKategori) {
+      return NextResponse.json(
+        { message: "Kategori tidak ditemukan!" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(
+      {
+        deleteKategori,
+        message: "Kategori berhasil dihapus!",
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.log("gagal menghapus kategori: ", error);
+
+    return NextResponse.json(
+      { message: "Kesalahan Pada Server!" },
+      { status: 500 }
+    );
+  }
+};

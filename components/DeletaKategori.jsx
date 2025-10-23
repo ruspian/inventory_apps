@@ -6,27 +6,29 @@ import {
 } from "./ui/morphing-popover";
 import { Button } from "./ui/button";
 
-const DeleteBarang = ({
+const DeleteKategori = ({
   open,
   setOpen,
-  idBarang,
-  dataBarang,
+  idKategori,
+  dataKategori,
   onSuccess,
   toaster,
 }) => {
-  const barang = dataBarang.find((barang) => barang.id === idBarang);
+  const findKategoriById = dataKategori.find(
+    (kategori) => kategori.id === idKategori
+  );
 
   const handleDelete = async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/barang`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/kategori`,
         {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            id: idBarang,
+            id: idKategori,
           }),
         }
       );
@@ -69,7 +71,7 @@ const DeleteBarang = ({
 
         <MorphingPopoverContent>
           <h2 className="text-lg font-semibold mb-4">
-            Hapus {barang?.nama} dari data barang?
+            Hapus {findKategoriById?.nama} dari kategori?
           </h2>
 
           <div className="flex justify-end gap-2">
@@ -94,4 +96,4 @@ const DeleteBarang = ({
   );
 };
 
-export default DeleteBarang;
+export default DeleteKategori;

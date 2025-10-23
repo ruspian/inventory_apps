@@ -10,10 +10,9 @@ import {
 } from "@/components/ui/table";
 import { Button } from "./ui/button";
 import { MdDeleteOutline, MdModeEdit } from "react-icons/md";
-import EditDataBarang from "./EditDataBarang";
 import { useState } from "react";
-import DeleteBarang from "./DeleteBarang";
 import EditKategori from "./EditKategori";
+import DeleteKategori from "./DeletaKategori";
 
 export default function TabelKategori({
   dataKategori,
@@ -92,13 +91,13 @@ export default function TabelKategori({
       )}
 
       {openDelete && (
-        <DeleteBarang
+        <DeleteKategori
           open={openDelete}
           setOpen={setOpenDelete}
-          idBarang={idBarang}
+          idKategori={idKategori}
           toaster={toaster}
           onSuccess={onSuccess}
-          dataBarang={dataBarang}
+          dataKategori={dataKategori}
         />
       )}
     </div>
