@@ -166,7 +166,7 @@ export const SidebarLink = ({ className, ...props }) => {
     },
     {
       label: "Data Pemasok",
-      href: "/pemasok",
+      href: "/supplier",
       icon: <CiShop size={30} />,
     },
     {
