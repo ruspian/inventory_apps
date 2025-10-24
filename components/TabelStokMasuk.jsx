@@ -14,6 +14,7 @@ import { useState } from "react";
 import EditSupplier from "./EditSupplier";
 import DeleteSupplier from "./DeleteSupplier";
 import { tanggal } from "@/lib/tanggal";
+import EditStokMasuk from "./EditStokMasuk";
 
 export default function TabelStokMasuk({
   dataStokMasuk,
@@ -21,12 +22,10 @@ export default function TabelStokMasuk({
   setOpenEdit,
   toaster,
   onSuccess,
-  openDelete,
-  setOpenDelete,
+  dataBarang,
+  dataSupplier,
 }) {
-  const [idSupplier, setIdSupplier] = useState("");
-
-  console.log("dataStokMasuk", dataStokMasuk);
+  const [idStokMasuk, setIdStokMasuk] = useState("");
 
   return (
     <div className="">
@@ -72,20 +71,10 @@ export default function TabelStokMasuk({
                       className={`flex gap-2 items-center text-white text-sm rounded-sm px-2 py-1 cursor-pointer bg-amber-500 hover:bg-amber-600`}
                       onClick={() => {
                         setOpenEdit(!openEdit);
-                        setIdSupplier(item.id);
+                        setIdStokMasuk(item.id);
                       }}
                     >
                       <MdModeEdit className="size-4" />
-                    </Button>
-
-                    <Button
-                      className={`flex gap-2 items-center text-white text-sm rounded-sm px-2 py-1 cursor-pointer bg-red-500 hover:bg-red-600`}
-                      onClick={() => {
-                        setOpenDelete(!openDelete);
-                        setIdSupplier(item.id);
-                      }}
-                    >
-                      <MdDeleteOutline className="size-4" />
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -105,24 +94,15 @@ export default function TabelStokMasuk({
       </div>
 
       {openEdit && (
-        <EditSupplier
+        <EditStokMasuk
           open={openEdit}
           setOpen={setOpenEdit}
-          dataSupplier={dataSupplier}
-          idSupplier={idSupplier}
+          dataStokMasuk={dataStokMasuk}
+          idStokMasuk={idStokMasuk}
           toaster={toaster}
-          onSuccess={onSuccess}
-        />
-      )}
-
-      {openDelete && (
-        <DeleteSupplier
-          open={openDelete}
-          setOpen={setOpenDelete}
-          idSupplier={idSupplier}
-          toaster={toaster}
-          onSuccess={onSuccess}
           dataSupplier={dataSupplier}
+          onSuccess={onSuccess}
+          dataBarang={dataBarang}
         />
       )}
     </div>

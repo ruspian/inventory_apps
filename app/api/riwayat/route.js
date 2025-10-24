@@ -98,3 +98,83 @@ export const POST = async (req) => {
     );
   }
 };
+
+// BUAT DATA RIWAYAT STOK
+export const PUT = async (req) => {
+  const session = await auth();
+
+  if (!session || session.user.role !== "ADMIN") {
+    return NextResponse.json(
+      { message: "Anda tidak memiliki akses!" },
+      { status: 401 }
+    );
+  }
+
+  try {
+    const body = await req.json();
+
+    const {
+      id,
+      tipe,
+      barangId,
+      stokSebelum,
+      jumlah,
+      stokSesudah,
+      catatan,
+      userId,
+      supplierId,
+    } = body;
+
+    if (
+      !id ||
+      !tipe ||
+      !barangId ||
+      !stokSebelum ||
+      !jumlah ||
+      !stokSesudah ||
+      !userId ||
+      !supplierId
+    ) {
+      return NextResponse.json({ message: "Isi semua form!" }, { status: 400 });
+    }
+
+    const jumlahInt = parseInt(jumlah);
+    const stokSebelumInt = parseInt(stokSebelum);
+    const stokSesudahInt = parseInt(stokSesudah);
+
+    if (isNaN(jumlahInt) || isNaN(stokSebelumInt) || isNaN(stokSesudahInt)) {
+      return NextResponse.json(
+        { message: "Jumlah harus berupa angka!" },
+        { status: 400 }
+      );
+    }
+
+    const newRiwayat = await prisma.riwayatStok.update({
+      where: {
+        id: id,
+      },
+      data: {
+        tipe: tipe,
+        barangId: barangId,
+        stokSebelum: stokSebelumInt,
+        jumlah: jumlahInt,
+        stokSesudah: stokSesudahInt,
+        catatan: catatan,
+        userId: userId,
+        supplierId: supplierId,
+      },
+    });
+
+    return NextResponse.json(
+      { newRiwayat, message: "Riwayat berhasil dibuat!" },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.log("gagal membuat riwayat: ", error);
+
+    return NextResponse.json(
+      { message: "Kesalahan Pada Server!" },
+      { status: 500 }
+    );
+  }
+};

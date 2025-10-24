@@ -12,7 +12,6 @@ import { MdOutlineAddBox } from "react-icons/md";
 const StokMasukPage = () => {
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
-  const [openDelete, setOpenDelete] = useState(false);
   const [dataStokMasuk, setDataStokMasuk] = useState([]);
   const [dataBarang, setDataBarang] = useState([]);
   const [dataSupplier, setDataSupplier] = useState([]);
@@ -69,10 +68,10 @@ const StokMasukPage = () => {
           dataStokMasuk={dataStokMasuk}
           openEdit={openEdit}
           setOpenEdit={setOpenEdit}
-          openDelete={openDelete}
-          setOpenDelete={setOpenDelete}
           toaster={toaster}
           onSuccess={fetchStokMasuk}
+          dataBarang={dataBarang}
+          dataSupplier={dataSupplier}
         />
       </div>
 
