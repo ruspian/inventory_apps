@@ -127,8 +127,6 @@ const EditStokMasuk = ({
     }
   };
 
-  console.log("selectedbarang", selectedBarang);
-
   return (
     <div className="flex gap-2 justify-center">
       <MorphingPopover open={open} onOpenChange={setOpen}>

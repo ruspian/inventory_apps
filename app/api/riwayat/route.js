@@ -65,6 +65,7 @@ export const POST = async (req) => {
     const stokSebelumInt = parseInt(stokSebelum);
     const stokSesudahInt = parseInt(stokSesudah);
 
+    // pastikan data ini adalah angka
     if (isNaN(jumlahInt) || isNaN(stokSebelumInt) || isNaN(stokSesudahInt)) {
       return NextResponse.json(
         { message: "Jumlah harus berupa angka!" },
@@ -72,21 +73,49 @@ export const POST = async (req) => {
       );
     }
 
-    const newRiwayat = await prisma.riwayatStok.create({
-      data: {
-        tipe: tipe,
-        barangId: barangId,
-        stokSebelum: stokSebelumInt,
-        jumlah: jumlahInt,
-        stokSesudah: stokSesudahInt,
-        catatan: catatan,
-        userId: userId,
-        supplierId: supplierId,
-      },
+    const result = await prisma.$transaction(async (tx) => {
+      // cari barang berdasarkan id
+      const barang = await tx.barang.findUnique({
+        where: {
+          id: barangId,
+        },
+      });
+
+      // jika barang tidak ditemukan
+      if (!barang) throw new Error("Barang tidak ditemukan!");
+
+      const stokBaru =
+        tipe === "MASUK" ? barang.stok + jumlahInt : barang.stok - jumlahInt;
+
+      // simpan data riwayat
+      const newRiwayat = await tx.riwayatStok.create({
+        data: {
+          tipe: tipe,
+          barangId: barangId,
+          stokSebelum: barang.stok,
+          jumlah: jumlahInt,
+          stokSesudah: stokBaru,
+          catatan: catatan,
+          userId: userId,
+          supplierId: supplierId,
+        },
+      });
+
+      // update stok di data barang
+      await tx.barang.update({
+        where: {
+          id: barangId,
+        },
+        data: {
+          stok: stokBaru,
+        },
+      });
+
+      return newRiwayat;
     });
 
     return NextResponse.json(
-      { newRiwayat, message: "Riwayat berhasil dibuat!" },
+      { result, message: "Riwayat berhasil dibuat!" },
       { status: 201 }
     );
   } catch (error) {
@@ -99,7 +128,7 @@ export const POST = async (req) => {
   }
 };
 
-// BUAT DATA RIWAYAT STOK
+// EDIT DATA RIWAYAT STOK
 export const PUT = async (req) => {
   const session = await auth();
 
@@ -142,6 +171,7 @@ export const PUT = async (req) => {
     const stokSebelumInt = parseInt(stokSebelum);
     const stokSesudahInt = parseInt(stokSesudah);
 
+    // pastikan data ini adalah angka
     if (isNaN(jumlahInt) || isNaN(stokSebelumInt) || isNaN(stokSesudahInt)) {
       return NextResponse.json(
         { message: "Jumlah harus berupa angka!" },
@@ -149,24 +179,66 @@ export const PUT = async (req) => {
       );
     }
 
-    const newRiwayat = await prisma.riwayatStok.update({
-      where: {
-        id: id,
-      },
-      data: {
-        tipe: tipe,
-        barangId: barangId,
-        stokSebelum: stokSebelumInt,
-        jumlah: jumlahInt,
-        stokSesudah: stokSesudahInt,
-        catatan: catatan,
-        userId: userId,
-        supplierId: supplierId,
-      },
+    const result = await prisma.$transaction(async (tx) => {
+      // cari riwayat sebelumnya berdasarkan id
+      const riwayatSebelumnya = await tx.riwayatStok.findUnique({
+        where: {
+          id: id,
+        },
+      });
+
+      // jika riwayat sebelumnya tidak ditemukan
+      if (!riwayatSebelumnya) throw new Error("Riwayat tidak ditemukan!");
+
+      // cari barang berdasarkan id
+      const barang = await tx.barang.findUnique({
+        where: {
+          id: barangId,
+        },
+      });
+
+      // jika barang tidak ditemukan
+      if (!barang) throw new Error("Barang tidak ditemukan!");
+
+      //   hitung stok baru
+      let stokBaru = barang.stok;
+
+      if (tipe === "MASUK") {
+        stokBaru = barang.stok - riwayatSebelumnya.jumlah + jumlahInt;
+      }
+
+      // simpan data riwayat
+      const updatedRiwayat = await tx.riwayatStok.update({
+        where: {
+          id: id,
+        },
+        data: {
+          tipe: tipe,
+          barangId: barangId,
+          stokSebelum: stokSebelumInt,
+          jumlah: jumlahInt,
+          stokSesudah: stokBaru,
+          catatan: catatan,
+          userId: userId,
+          supplierId: supplierId,
+        },
+      });
+
+      // update stok di data barang
+      await tx.barang.update({
+        where: {
+          id: barangId,
+        },
+        data: {
+          stok: stokBaru,
+        },
+      });
+
+      return updatedRiwayat;
     });
 
     return NextResponse.json(
-      { newRiwayat, message: "Riwayat berhasil dibuat!" },
+      { result, message: "Riwayat berhasil dibuat!" },
       { status: 201 }
     );
   } catch (error) {
