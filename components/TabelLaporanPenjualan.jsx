@@ -8,19 +8,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import EditSupplier from "./EditSupplier";
-import DeleteSupplier from "./DeleteSupplier";
 import { tanggal } from "@/lib/tanggal";
 
-export default function TabelOpname({
-  dataStokOpname,
-  openEdit,
-  setOpenEdit,
-  toaster,
-  onSuccess,
-  openDelete,
-  setOpenDelete,
-}) {
+export default function TabelLaporanPenjualan({ dataLaporanPenjualan }) {
   return (
     <div className="">
       <div className="overflow-x-auto rounded-sm border border-neutral-200 bg-background">
@@ -29,19 +19,17 @@ export default function TabelOpname({
             <TableRow className="bg-muted/50">
               <TableHead className="h-9 py-2">No</TableHead>
               <TableHead className="h-9 py-2">Tanggal</TableHead>
-              <TableHead className="h-9 py-2">Nama Barang</TableHead>
-              <TableHead className="h-9 py-2">Kode Barang</TableHead>
-              <TableHead className="h-9 py-2">Tipe</TableHead>
-              <TableHead className="h-9 py-2">Stok Sistem</TableHead>
-              <TableHead className="h-9 py-2">Stok Fisik</TableHead>
-              <TableHead className="h-9 py-2">Selisih</TableHead>
-              <TableHead className="h-9 py-2">Dicatat Oleh</TableHead>
+              <TableHead className="h-9 py-2">ID Struk</TableHead>
+              <TableHead className="h-9 py-2">Total Belanja</TableHead>
+              <TableHead className="h-9 py-2">Dibayar</TableHead>
+              <TableHead className="h-9 py-2">Kembalian</TableHead>
               <TableHead className="h-9 py-2">Catatan</TableHead>
+              <TableHead className="h-9 py-2">Aksi</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {dataStokOpname.length > 0 ? (
-              dataStokOpname.map((item, index) => (
+            {dataLaporanPenjualan.length > 0 ? (
+              dataLaporanPenjualan.map((item, index) => (
                 <TableRow key={item.id}>
                   <TableCell className="py-2 font-medium">
                     {index + 1}
@@ -74,28 +62,6 @@ export default function TabelOpname({
           </TableBody>
         </Table>
       </div>
-
-      {openEdit && (
-        <EditSupplier
-          open={openEdit}
-          setOpen={setOpenEdit}
-          dataSupplier={dataSupplier}
-          idSupplier={idSupplier}
-          toaster={toaster}
-          onSuccess={onSuccess}
-        />
-      )}
-
-      {openDelete && (
-        <DeleteSupplier
-          open={openDelete}
-          setOpen={setOpenDelete}
-          idSupplier={idSupplier}
-          toaster={toaster}
-          onSuccess={onSuccess}
-          dataSupplier={dataSupplier}
-        />
-      )}
     </div>
   );
 }
