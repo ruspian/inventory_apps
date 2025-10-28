@@ -8,14 +8,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "./ui/button";
-import { MdModeEdit } from "react-icons/md";
-import { useState } from "react";
 import { tanggal } from "@/lib/tanggal";
 import EditStokMasuk from "./EditStokMasuk";
 
-export default function TabelStokMasuk({
-  dataStokMasuk,
+export default function TabelRiwayatStok({
+  dataRiwayatStok,
   openEdit,
   setOpenEdit,
   toaster,
@@ -23,8 +20,6 @@ export default function TabelStokMasuk({
   dataBarang,
   dataSupplier,
 }) {
-  const [idStokMasuk, setIdStokMasuk] = useState("");
-
   return (
     <div className="">
       <div className="overflow-x-auto rounded-sm border border-neutral-200 bg-background">
@@ -41,14 +36,11 @@ export default function TabelStokMasuk({
               <TableHead className="h-9 py-2">Pemasok</TableHead>
               <TableHead className="h-9 py-2">Tanggal</TableHead>
               <TableHead className="h-9 py-2">Catatan</TableHead>
-              <TableHead className="h-9 py-2 flex justify-center">
-                Aksi
-              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {dataStokMasuk.length > 0 ? (
-              dataStokMasuk.map((item, index) => (
+            {dataRiwayatStok.length > 0 ? (
+              dataRiwayatStok.map((item, index) => (
                 <TableRow key={item.id}>
                   <TableCell className="py-2 font-medium">
                     {index + 1}
@@ -59,22 +51,13 @@ export default function TabelStokMasuk({
                   <TableCell className="py-2">{item.stokSebelum}</TableCell>
                   <TableCell className="py-2">{item.stokSesudah}</TableCell>
                   <TableCell className="py-2">{item.user.name}</TableCell>
-                  <TableCell className="py-2">{item.supplier.nama}</TableCell>
+                  <TableCell className="py-2">
+                    {item.supplier?.nama || "-"}
+                  </TableCell>
                   <TableCell className="py-2">
                     {tanggal(item.createdAt)}
                   </TableCell>
                   <TableCell className="py-2">{item.catatan}</TableCell>
-                  <TableCell className="py-2 flex gap-2 justify-center">
-                    <Button
-                      className={`flex gap-2 items-center text-white text-sm rounded-sm px-2 py-1 cursor-pointer bg-amber-500 hover:bg-amber-600`}
-                      onClick={() => {
-                        setOpenEdit(!openEdit);
-                        setIdStokMasuk(item.id);
-                      }}
-                    >
-                      <MdModeEdit className="size-4" />
-                    </Button>
-                  </TableCell>
                 </TableRow>
               ))
             ) : (
@@ -95,8 +78,6 @@ export default function TabelStokMasuk({
         <EditStokMasuk
           open={openEdit}
           setOpen={setOpenEdit}
-          dataStokMasuk={dataStokMasuk}
-          idStokMasuk={idStokMasuk}
           toaster={toaster}
           dataSupplier={dataSupplier}
           onSuccess={onSuccess}

@@ -127,10 +127,57 @@ export const POST = async (req) => {
 };
 
 // AMBIL DATA PENJUALAN
+
 export const GET = async (req) => {
   try {
-    const penjualan = await prisma.penjualan.findMany({
-      orderBy: { createdAt: "desc" },
+    // ambil parameter filter dari query
+    const { searchParams } = new URL(req.url);
+    const filter = searchParams.get("filter");
+
+    const now = new Date();
+    let tanggalMulai;
+    let tanggalSelesai = new Date(now);
+
+    // Set Tanggal Mulai berdasarkan filter
+    switch (filter) {
+      case "harian":
+        // Mulai dari jam 00:00:00 hari ini
+        tanggalMulai = new Date(now.setHours(0, 0, 0, 0));
+        // Selesai jam 23:59:59 hari ini
+        tanggalSelesai = new Date(now.setHours(23, 59, 59, 999));
+        break;
+      case "mingguan":
+        // Mulai dari hari Senin minggu ini
+        const hariIni = now.getDay(); // 0=Minggu, 1=Senin, ...
+        const diff = now.getDate() - hariIni + (hariIni === 0 ? -6 : 1); // Hitung mundur ke Senin
+        tanggalMulai = new Date(now.setDate(diff));
+        tanggalMulai.setHours(0, 0, 0, 0);
+        break;
+      case "bulanan":
+        // Mulai dari tanggal 1 bulan ini
+        tanggalMulai = new Date(now.getFullYear(), now.getMonth(), 1);
+        break;
+      case "tahunan":
+        // Mulai dari 1 Januari tahun ini
+        tanggalMulai = new Date(now.getFullYear(), 0, 1);
+        break;
+      default:
+        // Default ke Hari Ini jika filter tidak valid
+        tanggalMulai = new Date(now.setHours(0, 0, 0, 0));
+        tanggalSelesai = new Date(now.setHours(23, 59, 59, 999));
+    }
+
+    // Buat klausa where untuk Prisma
+    const whereClause = {
+      createdAt: {
+        gte: tanggalMulai, // <-- 'gte' = Greater Than or Equal
+        lte: tanggalSelesai, // <-- 'lte' = Less Than or Equal
+      },
+    };
+
+    // Ambil data penjualan berdasarkan whereClause
+    const laporanPenjualan = await prisma.penjualan.findMany({
+      where: whereClause,
       include: {
         detail: {
           include: {
@@ -138,16 +185,16 @@ export const GET = async (req) => {
           },
         },
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
 
-    return NextResponse.json(penjualan, { status: 200 });
+    return NextResponse.json(laporanPenjualan, { status: 200 });
   } catch (error) {
-    console.log("gagal mengambil data penjualan", error);
-
+    console.error("Gagal mengambil laporan penjualan:", error);
     return NextResponse.json(
-      {
-        message: "Terjadi kesalahan pada server!",
-      },
+      { message: "Terjadi kesalahan pada server!" },
       { status: 500 }
     );
   }

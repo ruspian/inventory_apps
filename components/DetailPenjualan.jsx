@@ -12,8 +12,6 @@ const DetailPenjualan = ({
   setOpen,
   idPenjualan,
   dataLaporanPenjualan,
-  onSuccess,
-  toaster,
 }) => {
   console.log("dataLaporanPenjualan", dataLaporanPenjualan);
 

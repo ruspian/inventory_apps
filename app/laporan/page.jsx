@@ -11,21 +11,22 @@ const LaporanPage = () => {
   const [dataLaporanPenjualan, setDataLaporanPenjualan] = useState([]);
   const [openDetail, setOpenDetail] = useState(false);
   const [idPenjualan, setIdPenjualan] = useState(null);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+
+  const { register, watch } = useForm({
+    defaultValues: {
+      filter: "harian",
+    },
+  });
+
+  // pantau nilai filter menggunakan watch dari react-hook-form
+  const filterValue = watch("filter");
 
   const toaster = useToaster();
 
-  const onSubmit = (data) => {
-    console.log("data", data);
-  };
-
-  const fetchPenjualan = async () => {
+  const fetchPenjualan = async (filter) => {
     try {
-      const laporanPenjualan = await getLaporanPenjualan();
+      // Kirim filter ke fungsi getLaporanPenjualan
+      const laporanPenjualan = await getLaporanPenjualan(filter);
       setDataLaporanPenjualan(laporanPenjualan);
     } catch (error) {
       toaster.current.show({
@@ -39,25 +40,23 @@ const LaporanPage = () => {
   };
 
   useEffect(() => {
-    fetchPenjualan();
-  }, [toaster]);
+    // Panggil fetchPenjualan saat filterValue berubah
+    if (filterValue) {
+      fetchPenjualan(filterValue);
+    }
+  }, [filterValue, toaster]);
 
   return (
     <div>
       <Breadcrumb />
 
-      <div className="w-full flex justify-start my-6">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="p-2 border border-neutral-300 rounded-sm"
-        >
-          <select {...register("filter")}>
-            <option value="harian">Hari Ini</option>
-            <option value="mingguan">Minggu Ini</option>
-            <option value="bulanan">Bulan Ini</option>
-            <option value="tahunan">Tahun Ini</option>
-          </select>
-        </form>
+      <div className="w-[120px] flex justify-start my-6 p-2 border border-neutral-300 rounded-sm">
+        <select {...register("filter")}>
+          <option value="harian">Hari Ini</option>
+          <option value="mingguan">Minggu Ini</option>
+          <option value="bulanan">Bulan Ini</option>
+          <option value="tahunan">Tahun Ini</option>
+        </select>
       </div>
 
       <div className="">
