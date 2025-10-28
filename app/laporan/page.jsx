@@ -9,6 +9,8 @@ import { useForm } from "react-hook-form";
 
 const LaporanPage = () => {
   const [dataLaporanPenjualan, setDataLaporanPenjualan] = useState([]);
+  const [openDetail, setOpenDetail] = useState(false);
+  const [idPenjualan, setIdPenjualan] = useState(null);
   const {
     register,
     handleSubmit,
@@ -59,7 +61,13 @@ const LaporanPage = () => {
       </div>
 
       <div className="">
-        <TabelLaporanPenjualan dataLaporanPenjualan={dataLaporanPenjualan} />
+        <TabelLaporanPenjualan
+          dataLaporanPenjualan={dataLaporanPenjualan}
+          openDetail={openDetail}
+          setOpenDetail={setOpenDetail}
+          idPenjualan={idPenjualan}
+          setIdPenjualan={setIdPenjualan}
+        />
       </div>
     </div>
   );

@@ -125,3 +125,30 @@ export const POST = async (req) => {
     );
   }
 };
+
+// AMBIL DATA PENJUALAN
+export const GET = async (req) => {
+  try {
+    const penjualan = await prisma.penjualan.findMany({
+      orderBy: { createdAt: "desc" },
+      include: {
+        detail: {
+          include: {
+            barang: true,
+          },
+        },
+      },
+    });
+
+    return NextResponse.json(penjualan, { status: 200 });
+  } catch (error) {
+    console.log("gagal mengambil data penjualan", error);
+
+    return NextResponse.json(
+      {
+        message: "Terjadi kesalahan pada server!",
+      },
+      { status: 500 }
+    );
+  }
+};

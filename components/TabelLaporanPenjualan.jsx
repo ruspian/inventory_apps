@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Table,
   TableBody,
@@ -9,8 +7,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { tanggal } from "@/lib/tanggal";
+import { Button } from "./ui/button";
+import { TbListDetails } from "react-icons/tb";
+import DetailPenjualan from "./DetailPenjualan";
 
-export default function TabelLaporanPenjualan({ dataLaporanPenjualan }) {
+export default function TabelLaporanPenjualan({
+  dataLaporanPenjualan,
+  openDetail,
+  setOpenDetail,
+  idPenjualan,
+  setIdPenjualan,
+}) {
   return (
     <div className="">
       <div className="overflow-x-auto rounded-sm border border-neutral-200 bg-background">
@@ -23,7 +30,6 @@ export default function TabelLaporanPenjualan({ dataLaporanPenjualan }) {
               <TableHead className="h-9 py-2">Total Belanja</TableHead>
               <TableHead className="h-9 py-2">Dibayar</TableHead>
               <TableHead className="h-9 py-2">Kembalian</TableHead>
-              <TableHead className="h-9 py-2">Catatan</TableHead>
               <TableHead className="h-9 py-2">Aksi</TableHead>
             </TableRow>
           </TableHeader>
@@ -37,16 +43,24 @@ export default function TabelLaporanPenjualan({ dataLaporanPenjualan }) {
                   <TableCell className="py-2">
                     {tanggal(item.createdAt)}
                   </TableCell>
-                  <TableCell className="py-2">{item.barang.nama}</TableCell>
+                  <TableCell className="py-2">{item.id}</TableCell>
+                  <TableCell className="py-2">{item.total}</TableCell>
+                  <TableCell className="py-2">{item.dibayar}</TableCell>
+                  <TableCell className="py-2">{item.kembalian}</TableCell>
                   <TableCell className="py-2">
-                    {item.barang.kodeBarang}
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="px-3 cursor-pointer"
+                      onClick={() => {
+                        setOpenDetail(!openDetail);
+                        setIdPenjualan(item.id);
+                      }}
+                    >
+                      <TbListDetails className="mr-2" />
+                      Detail
+                    </Button>
                   </TableCell>
-                  <TableCell className="py-2">{item.tipe}</TableCell>
-                  <TableCell className="py-2">{item.stokSebelum}</TableCell>
-                  <TableCell className="py-2">{item.stokSesudah}</TableCell>
-                  <TableCell className="py-2">{item.jumlah}</TableCell>
-                  <TableCell className="py-2">{item.user.name}</TableCell>
-                  <TableCell className="py-2">{item.catatan}</TableCell>
                 </TableRow>
               ))
             ) : (
@@ -62,6 +76,15 @@ export default function TabelLaporanPenjualan({ dataLaporanPenjualan }) {
           </TableBody>
         </Table>
       </div>
+
+      {openDetail && (
+        <DetailPenjualan
+          open={openDetail}
+          setOpen={setOpenDetail}
+          dataLaporanPenjualan={dataLaporanPenjualan}
+          idPenjualan={idPenjualan}
+        />
+      )}
     </div>
   );
 }
