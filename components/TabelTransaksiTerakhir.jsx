@@ -6,72 +6,44 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { rupiah } from "@/lib/rupiah";
+import { tanggal } from "@/lib/tanggal";
+import React from "react";
 
-const programmingLanguages = [
-  {
-    id: "1",
-    name: "JavaScript",
-    releaseYear: "1995",
-    developer: "Brendan Eich",
-    typing: "Dynamic",
-  },
-  {
-    id: "2",
-    name: "Python",
-    releaseYear: "1991",
-    developer: "Guido van Rossum",
-    typing: "Dynamic",
-  },
-  {
-    id: "3",
-    name: "Java",
-    releaseYear: "1995",
-    developer: "James Gosling",
-    typing: "Static",
-  },
-  {
-    id: "4",
-    name: "C++",
-    releaseYear: "1985",
-    developer: "Bjarne Stroustrup",
-    typing: "Static",
-  },
-  {
-    id: "5",
-    name: "Ruby",
-    releaseYear: "1995",
-    developer: "Yukihiro Matsumoto",
-    typing: "Dynamic",
-  },
-];
-
-export default function TabelTransaksiTerakhir() {
+export default function TabelTransaksiTerakhir({ transaksiTerakhir }) {
   return (
     <div className="">
       <div className="overflow-x-auto rounded-sm border border-neutral-200 bg-background">
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50">
-              <TableHead className="h-9 py-2">Kode</TableHead>
-              <TableHead className="h-9 py-2">Nama Barang</TableHead>
-              <TableHead className="h-9 py-2">Stok</TableHead>
-              <TableHead className="h-9 py-2">Kategori</TableHead>
-              <TableHead className="h-9 py-2">Satuan</TableHead>
+              <TableHead className="h-9 py-2">Waktu Transaksi</TableHead>
+              <TableHead className="h-9 py-2">Total Belanja</TableHead>
+              <TableHead className="h-9 py-2">Barang Terjual</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {programmingLanguages.map((language) => (
-              <TableRow key={language.id}>
-                <TableCell className="py-2 font-medium">
-                  {language.name}
+            {transaksiTerakhir.length > 0 ? (
+              transaksiTerakhir.map((barang, index) => (
+                <TableRow key={index + 1}>
+                  <TableCell className="py-2 font-medium">
+                    {tanggal(barang.createdAt)}
+                  </TableCell>
+                  <TableCell className="py-2">{rupiah(barang.total)}</TableCell>
+                  {barang.detail.map((item, index) => (
+                    <TableCell key={item.id} className="py-2 flex flex-col">
+                      {index + 1}. {item.barang.nama}{" "}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={5} className="py-4 text-center">
+                  Belum ada transaksi terakhir.
                 </TableCell>
-                <TableCell className="py-2">{language.releaseYear}</TableCell>
-                <TableCell className="py-2">{language.releaseYear}</TableCell>
-                <TableCell className="py-2">{language.developer}</TableCell>
-                <TableCell className="py-2">{language.typing}</TableCell>
-                <TableCell className="py-2">{language.paradigm}</TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </div>

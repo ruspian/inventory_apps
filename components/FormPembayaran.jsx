@@ -29,8 +29,10 @@ export default function FormPembayaran({
     if (dataKeranjang.length === 0) {
       toaster.current?.show({
         title: "Error",
-        description: "Keranjang kosong!",
+        message: "Keranjang kosong!",
         status: "error",
+        duration: 5000,
+        position: "top-center",
       });
       setIsLoading(false);
       return;
@@ -40,8 +42,10 @@ export default function FormPembayaran({
     if (Number(uangDibayar) < totalHarga) {
       toaster.current?.show({
         title: "Error",
-        description: "Uang tunai kurang!",
+        message: "Uang tunai kurang!",
         status: "error",
+        duration: 5000,
+        position: "top-center",
       });
       setIsLoading(false);
       return;
@@ -79,7 +83,7 @@ export default function FormPembayaran({
       // jika Sukses!
       toaster.current?.show({
         title: "Sukses",
-        description: "Transaksi berhasil disimpan!",
+        message: "Transaksi berhasil disimpan!",
         status: "success",
         duration: 5000,
         position: "top-center",
@@ -91,7 +95,7 @@ export default function FormPembayaran({
     } catch (error) {
       toaster.current?.show({
         title: "Error",
-        description: error.message,
+        message: error.message || "Terjadi kesalahan, silahkan coba lagi!",
         status: "error",
         duration: 5000,
         position: "top-center",

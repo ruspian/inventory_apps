@@ -1,24 +1,25 @@
+import { rupiah } from "@/lib/rupiah";
 import { BookMinus, BookUser, BookX } from "lucide-react";
 import React from "react";
 
-const BadgeDashboard = () => {
+const BadgeDashboard = ({ omset, profit, transaksi }) => {
   const items = [
     {
       icon: <BookUser size={50} />,
       title: "Omset Hari Ini",
-      count: 22,
-      sub: "Barang",
+      count: rupiah(omset),
+      sub: "",
     },
     {
       icon: <BookX size={50} />,
       title: "Profit Hari Ini",
-      count: 22,
-      sub: "Barang",
+      count: rupiah(profit),
+      sub: "",
     },
     {
       icon: <BookMinus size={50} />,
       title: "Jumlah Transaksi Hari Ini",
-      count: 22,
+      count: transaksi,
       sub: "Barang",
     },
   ];

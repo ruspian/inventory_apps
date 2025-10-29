@@ -7,76 +7,39 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-const programmingLanguages = [
-  {
-    id: "1",
-    name: "JavaScript",
-    releaseYear: "1995",
-    developer: "Brendan Eich",
-    typing: "Dynamic",
-  },
-  {
-    id: "2",
-    name: "Python",
-    releaseYear: "1991",
-    developer: "Guido van Rossum",
-    typing: "Dynamic",
-  },
-  {
-    id: "3",
-    name: "Java",
-    releaseYear: "1995",
-    developer: "James Gosling",
-    typing: "Static",
-  },
-  {
-    id: "4",
-    name: "C++",
-    releaseYear: "1985",
-    developer: "Bjarne Stroustrup",
-    typing: "Static",
-  },
-  {
-    id: "5",
-    name: "Ruby",
-    releaseYear: "1995",
-    developer: "Yukihiro Matsumoto",
-    typing: "Dynamic",
-  },
-];
-
-export default function TabelBarangJasaTerlaris() {
+export default function TabelBarangJasaTerlaris({ barangTerlaris }) {
   return (
     <div className="">
       <div className="overflow-x-auto rounded-sm border border-neutral-200 bg-background">
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50">
-              <TableHead className="h-9 py-2">Kode</TableHead>
               <TableHead className="h-9 py-2">Nama Barang</TableHead>
-              <TableHead className="h-9 py-2">Stok</TableHead>
               <TableHead className="h-9 py-2">Kategori</TableHead>
-              <TableHead className="h-9 py-2">Satuan</TableHead>
+              <TableHead className="h-9 py-2">Total Terjual</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {programmingLanguages.map((language) => (
-              <TableRow key={language.id}>
-                <TableCell className="py-2 font-medium">
-                  {language.name}
+            {barangTerlaris.length > 0 ? (
+              barangTerlaris.map((barang, index) => (
+                <TableRow key={index + 1}>
+                  <TableCell className="py-2 font-medium">
+                    {barang.nama}
+                  </TableCell>
+                  <TableCell className="py-2">{barang.kategori}</TableCell>
+                  <TableCell className="py-2">{barang.totalTerjual}</TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={5} className="py-4 text-center">
+                  Belum ada data barang terlaris.
                 </TableCell>
-                <TableCell className="py-2">{language.releaseYear}</TableCell>
-                <TableCell className="py-2">{language.releaseYear}</TableCell>
-                <TableCell className="py-2">{language.developer}</TableCell>
-                <TableCell className="py-2">{language.typing}</TableCell>
-                <TableCell className="py-2">{language.paradigm}</TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </div>
     </div>
   );
 }
-
-export { Component };

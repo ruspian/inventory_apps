@@ -22,7 +22,7 @@ const KasirPage = () => {
 
         toaster.current?.show({
           title: "Kesalahan!",
-          description: errorData.message,
+          message: errorData.message,
           status: "error",
           duration: 5000,
           position: "top-center",
@@ -54,7 +54,7 @@ const KasirPage = () => {
     } catch (error) {
       toaster.current?.show({
         title: "Kesalahan!",
-        description: "Gagal memindai kode barang.",
+        message: "Gagal memindai kode barang.",
         status: "error",
         duration: 5000,
         position: "top-center",
