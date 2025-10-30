@@ -98,19 +98,82 @@ export const POST = async (req) => {
 // AMBIL DATA BARANG
 export const GET = async (req) => {
   try {
-    const allBarang = await prisma.barang.findMany({
-      orderBy: {
-        nama: "asc",
-      },
-      include: {
-        kategori: true,
-      },
-    });
+    const { searchParams } = new URL(req.url);
 
-    return NextResponse.json(allBarang, { status: 200 });
+    // 1. Ambil Query Parameter
+    const search = searchParams.get("search") || "";
+    const pageParam = searchParams.get("page"); // Cek apakah ada parameter page
+    const limitParam = searchParams.get("limit"); // Cek apakah ada parameter limit
+
+    // Buat where clause untuk search
+    const whereClause = {
+      OR: [
+        {
+          nama: {
+            contains: search,
+            mode: "insensitive", // Tidak peduli huruf besar/kecil
+          },
+        },
+        {
+          kodeBarang: {
+            contains: search,
+            mode: "insensitive",
+          },
+        },
+      ],
+    };
+
+    // Cek apakah pagination diminta
+    if (pageParam && limitParam && search) {
+      const page = parseInt(pageParam) || 1;
+      const limit = parseInt(limitParam) || 10;
+      const skip = (page - 1) * limit;
+
+      // Jalankan query dengan $transaction
+      const [barang, totalCount] = await prisma.$transaction([
+        prisma.barang.findMany({
+          where: whereClause,
+          include: { kategori: true },
+          orderBy: { nama: "asc" },
+          skip: skip,
+          take: limit,
+        }),
+        prisma.barang.count({
+          where: whereClause,
+        }),
+      ]);
+
+      // Kembalikan data pagination
+      return NextResponse.json(
+        {
+          data: barang,
+          totalCount: totalCount,
+        },
+        { status: 200 }
+      );
+    } else {
+      // Ambil SEMUA barang yang cocok dengan pencarian (jika ada)
+      const allBarang = await prisma.barang.findMany({
+        where: whereClause,
+        include: {
+          kategori: true,
+        },
+        orderBy: {
+          nama: "asc",
+        },
+      });
+
+      // Kembalikan semua data
+      return NextResponse.json(
+        {
+          data: allBarang,
+          totalCount: allBarang.length, // Totalnya adalah jumlah yang ditemukan
+        },
+        { status: 200 }
+      );
+    }
   } catch (error) {
-    console.log("error get barang", error);
-
+    console.log("error get all barang", error);
     return NextResponse.json(
       { message: "Terjadi Kesalahan Server!" },
       { status: 500 }

@@ -4,9 +4,9 @@ import Breadcrumb from "@/components/Breadcrumb";
 import TabelStokMasuk from "@/components/TabelStokMasuk";
 import TambahStokMasuk from "@/components/TambahStokMasuk";
 import { Button } from "@/components/ui/button";
-import { getBarang, getRiwayat, getSupplier } from "@/lib/data";
+import { getRiwayatMasuk, getSemuaBarang, getSupplier } from "@/lib/data";
 import { useToaster } from "@/providers/ToasterProvider";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { MdOutlineAddBox } from "react-icons/md";
 
 const StokMasukPage = () => {
@@ -18,16 +18,13 @@ const StokMasukPage = () => {
 
   const toaster = useToaster();
 
-  const fetchStokMasuk = async () => {
+  const fetchStokMasuk = useCallback(async () => {
     try {
-      const [riwayatStok, barang, supplier] = await Promise.all([
-        getRiwayat(),
-        getBarang(),
+      const [stokMasuk, barang, supplier] = await Promise.all([
+        getRiwayatMasuk(),
+        getSemuaBarang(),
         getSupplier(),
       ]);
-
-      //   ambil tipe masuk dari riwayat
-      const stokMasuk = riwayatStok.filter((item) => item.tipe === "MASUK");
 
       setDataStokMasuk(stokMasuk);
       setDataBarang(barang);
@@ -41,11 +38,12 @@ const StokMasukPage = () => {
         position: "top-center",
       });
     }
-  };
+  }, [toaster]);
 
   useEffect(() => {
     fetchStokMasuk();
-  }, [toaster]);
+  }, [fetchStokMasuk]);
+
   return (
     <div>
       <Breadcrumb />
