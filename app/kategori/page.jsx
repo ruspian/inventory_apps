@@ -1,27 +1,47 @@
 "use client";
 
 import Breadcrumb from "@/components/Breadcrumb";
+import Pagination from "@/components/Pagination";
 import TabelKategori from "@/components/TabelKategori";
 import TambahKategori from "@/components/TambahKategori";
 import { Button } from "@/components/ui/button";
 import { getKategori } from "@/lib/data";
 import { useToaster } from "@/providers/ToasterProvider";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { IoSearchOutline } from "react-icons/io5";
 import { MdOutlineAddBox } from "react-icons/md";
+import { useDebounce } from "use-debounce";
+
+const ITEM_PER_HALAMAN = 10;
 
 const KategoriPage = () => {
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [dataKategori, setDataKategori] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [totalCount, setTotalCount] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Debounce => Jangan cari sampai user berhenti ngetik 500ms
+  const [debouncedSearch] = useDebounce(searchTerm, 500);
 
   const toaster = useToaster();
 
-  const fetchKategori = async () => {
+  const fetchKategori = useCallback(async () => {
     try {
-      const categories = await getKategori();
+      setIsLoading(true);
 
-      setDataKategori(categories);
+      const categories = await getKategori(
+        debouncedSearch,
+        currentPage,
+        ITEM_PER_HALAMAN
+      );
+
+      setDataKategori(categories.data);
+      setTotalCount(categories.totalCount);
     } catch (error) {
       toaster.current?.show({
         title: "Error",
@@ -30,12 +50,16 @@ const KategoriPage = () => {
         duration: 5000,
         position: "top-center",
       });
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, [debouncedSearch, currentPage, toaster]);
 
   useEffect(() => {
     fetchKategori();
-  }, [toaster]);
+  }, [fetchKategori]);
+
+  const totalPages = Math.ceil(totalCount / ITEM_PER_HALAMAN);
 
   return (
     <div>
@@ -52,6 +76,21 @@ const KategoriPage = () => {
             <span className="text-sm font-normal">Tambah Kategori</span>
           </Button>
         </div>
+
+        {/* cari kategori */}
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Nama Kategori"
+            className="border p-2 pr-8 rounded-sm w-full"
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1); // Reset ke halaman 1 setiap kali ngetik
+            }}
+          />
+          <IoSearchOutline className="size-5 absolute right-2 top-1/2 -translate-y-1/2 text-gray-400" />
+        </div>
       </div>
 
       <div className="">
@@ -64,6 +103,16 @@ const KategoriPage = () => {
           toaster={toaster}
           onSuccess={fetchKategori}
         />
+
+        {dataKategori.length > 0 && (
+          <Pagination
+            totalCount={totalCount}
+            setCurrentPage={setCurrentPage}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            isLoading={isLoading}
+          />
+        )}
       </div>
 
       {openAdd && (

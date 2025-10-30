@@ -25,7 +25,7 @@ export default function TabelKategori({
 }) {
   const [idKategori, setIdKategori] = useState("");
   return (
-    <div className="md:w-[700px]">
+    <div className="w-full">
       <div className="overflow-x-auto rounded-sm border border-neutral-200 bg-background">
         <Table>
           <TableHeader>

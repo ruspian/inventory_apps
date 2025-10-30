@@ -5,16 +5,65 @@ import { auth } from "@/lib/auth";
 // AMBIL DATA KATEGORI
 export const GET = async (req) => {
   try {
-    const allKategori = await prisma.kategori.findMany();
+    const { searchParams } = new URL(req.url);
 
-    if (!allKategori) {
+    // 1. Ambil Query Parameter
+    const search = searchParams.get("search") || "";
+    const pageParam = searchParams.get("page"); // Cek apakah ada parameter page
+    const limitParam = searchParams.get("limit"); // Cek apakah ada parameter limit
+
+    // Buat where clause untuk search berdasarkan nama
+    const whereClause = {
+      OR: [
+        {
+          nama: {
+            contains: search,
+            mode: "insensitive", // Tidak peduli huruf besar/kecil
+          },
+        },
+      ],
+    };
+
+    // Cek apakah pagination diminta
+    if (pageParam && limitParam) {
+      const page = parseInt(pageParam) || 1;
+      const limit = parseInt(limitParam) || 10;
+      const skip = (page - 1) * limit;
+
+      const [kategori, totalCount] = await prisma.$transaction([
+        prisma.kategori.findMany({
+          where: whereClause,
+          orderBy: { nama: "asc" },
+          skip: skip,
+          take: limit,
+        }),
+        prisma.kategori.count({
+          where: whereClause,
+        }),
+      ]);
+
+      // Kembalikan data pagination
       return NextResponse.json(
-        { message: "Kategori tidak ditemukan" },
-        { status: 404 }
+        {
+          data: kategori,
+          totalCount: totalCount,
+        },
+        { status: 200 }
+      );
+    } else {
+      const allKategori = await prisma.kategori.findMany({
+        where: whereClause,
+        orderBy: { nama: "asc" },
+      });
+
+      return NextResponse.json(
+        {
+          data: allKategori,
+          totalCount: allKategori.length,
+        },
+        { status: 200 }
       );
     }
-
-    return NextResponse.json(allKategori);
   } catch (error) {
     console.log("Gagal ambil data kategori: ", error);
     return NextResponse.json(
@@ -44,6 +93,36 @@ export const POST = async (req) => {
     if (!Array.isArray(nama)) {
       return NextResponse.json(
         { message: "Format data tidak valid. Harus berupa array nama." },
+        { status: 400 }
+      );
+    }
+
+    // Cek duplikat dalam input
+    const isDuplicateInput = new Set(nama).size !== nama.length;
+    if (isDuplicateInput) {
+      return NextResponse.json(
+        { message: "Nama kategori tidak boleh duplikat dalam input!" },
+        { status: 400 }
+      );
+    }
+
+    // Ambil semua kategori yang sudah ada di database
+    const existingKategori = await prisma.kategori.findMany({
+      where: {
+        nama: {
+          in: nama,
+        },
+      },
+      select: { nama: true },
+    });
+
+    // Cek apakah ada nama kategori yang sudah terdaftar
+    if (existingKategori.length > 0) {
+      const existingNames = existingKategori.map((k) => k.nama).join(", ");
+      return NextResponse.json(
+        {
+          message: `${existingNames} sudah ada, silakan gunakan nama lain!`,
+        },
         { status: 400 }
       );
     }

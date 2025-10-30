@@ -54,7 +54,7 @@ const TambahKategori = ({ open, setOpen, onSuccess, toaster }) => {
     } catch (error) {
       toaster.current?.show({
         title: "Kesalahan!",
-        message: String(error) || "Gagal menambah data kategori",
+        message: String(error.message) || "Gagal menambah data kategori",
         variant: "error",
         duration: 5000,
         position: "top-center",
@@ -96,12 +96,12 @@ const TambahKategori = ({ open, setOpen, onSuccess, toaster }) => {
             </Button>
           </form>
 
-          <div className="flex gap-2 my-4">
+          <div className="grid grid-cols-3 gap-2 my-4">
             {kategoriView.length > 0 &&
               kategoriView.map((item, index) => (
                 <p
                   key={index}
-                  className="px-2 py-1 bg-emerald-500 rounded-sm text-white flex gap-2 items-center "
+                  className="px-2 py-1 bg-emerald-500 rounded-sm text-white flex gap-2 items-center justify-between "
                 >
                   {item.nama}
                   <FaRegTrashAlt

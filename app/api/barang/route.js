@@ -124,7 +124,7 @@ export const GET = async (req) => {
     };
 
     // Cek apakah pagination diminta
-    if (pageParam && limitParam && search) {
+    if (pageParam && limitParam) {
       const page = parseInt(pageParam) || 1;
       const limit = parseInt(limitParam) || 10;
       const skip = (page - 1) * limit;

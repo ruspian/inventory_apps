@@ -1,7 +1,7 @@
 import React from "react";
 import { CiSquareChevLeft, CiSquareChevRight } from "react-icons/ci";
 
-const BarangPagination = ({
+const Pagination = ({
   totalCount,
   setCurrentPage,
   currentPage,
@@ -38,4 +38,4 @@ const BarangPagination = ({
   );
 };
 
-export default BarangPagination;
+export default Pagination;

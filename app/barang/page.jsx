@@ -1,18 +1,17 @@
 "use client";
 
-import BarangPagination from "@/components/BarangPagination";
+import Pagination from "@/components/Pagination";
 import Breadcrumb from "@/components/Breadcrumb";
 import TabelBarang from "@/components/TabelBarang";
 import TambahDataBarang from "@/components/TambahDataBarang";
 import { Button } from "@/components/ui/button";
-import { getBarang, getKategori } from "@/lib/data";
+import { getBarang, getSemuaKategori } from "@/lib/data";
 import { useToaster } from "@/providers/ToasterProvider";
 import React, { useCallback, useEffect, useState } from "react";
 import { IoSearchOutline } from "react-icons/io5";
 import { MdModeEdit, MdOutlineAddBox } from "react-icons/md";
 import { useDebounce } from "use-debounce";
 
-const LOKASI_API = process.env.NEXT_PUBLIC_API_URL;
 const ITEM_PER_HALAMAN = 10; // Samakan dengan 'limit' di API
 
 const DataBarangPage = () => {
@@ -36,8 +35,8 @@ const DataBarangPage = () => {
   // Fungsi ini hanya mengambil kategori
   const fetchKategori = async () => {
     try {
-      const kategoryResponse = await getKategori();
-      setKategoriData(kategoryResponse);
+      const kategoryResponse = await getSemuaKategori();
+      setKategoriData(kategoryResponse.data);
     } catch (error) {
       toaster.current?.show({
         title: "Error",
@@ -126,13 +125,15 @@ const DataBarangPage = () => {
           onSuccess={fetchBarang}
         />
 
-        <BarangPagination
-          totalCount={totalCount}
-          setCurrentPage={setCurrentPage}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          isLoading={isLoading}
-        />
+        {dataBarang.length > 0 && (
+          <Pagination
+            totalCount={totalCount}
+            setCurrentPage={setCurrentPage}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            isLoading={isLoading}
+          />
+        )}
       </div>
 
       {openAdd && (
