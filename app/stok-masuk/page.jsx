@@ -16,6 +16,7 @@ import { useToaster } from "@/providers/ToasterProvider";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import React, { useCallback, useEffect, useState } from "react";
+import { FaRegFilePdf } from "react-icons/fa6";
 import { MdOutlineAddBox } from "react-icons/md";
 
 const ITEM_PER_HALAMAN = 10;
@@ -31,7 +32,7 @@ const StokMasukPage = () => {
 
   // state untuk search dan pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [filter, setFilter] = useState("harian");
+  const [filter, setFilter] = useState("");
   const [totalCount, setTotalCount] = useState(0);
 
   const [isExporting, setIsExporting] = useState(false);
@@ -158,7 +159,7 @@ const StokMasukPage = () => {
         item.catatan,
       ]);
 
-      const filterText = filter.charAt(0).toUpperCase() + filter.slice(1);
+      const filterText = filter.charAt(0).toUpperCase() + filter.slice(1); // ubah awal huruf ke huruf besar
 
       // Ambil lebar halaman (otomatis jadi 330mm)
       const pageWidth = doc.internal.pageSize.getWidth();
@@ -215,12 +216,12 @@ const StokMasukPage = () => {
           </Button>
 
           <Button
-            className={`flex gap-2 items-center text-white text-sm rounded-sm px-4 py-2 cursor-pointer bg-emerald-500 hover:bg-emerald-600`}
+            className={`flex gap-2 items-center text-white text-sm rounded-sm px-4 py-2 cursor-pointer bg-red-500 hover:bg-red-600`}
             onClick={handleExportPDF}
             disabled={isExporting}
           >
-            <MdOutlineAddBox className="size-5" />
-            <span className="text-sm font-normal">PDF</span>
+            <FaRegFilePdf className="size-5" />
+            <span className="text-sm font-normal">Ekspor PDF</span>
           </Button>
         </div>
 
@@ -233,6 +234,7 @@ const StokMasukPage = () => {
             }}
             className="border p-2 rounded-sm"
           >
+            <option value="semua">Semua</option>
             <option value="harian">Hari Ini</option>
             <option value="mingguan">Minggu Ini</option>
             <option value="bulanan">Bulan Ini</option>

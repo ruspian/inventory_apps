@@ -14,11 +14,16 @@ export const GET = async (req) => {
     const { searchParams } = new URL(req.url);
 
     // ambil parameter filter dari query
-    const filter = searchParams.get("filter") || "harian"; // Default ke 'harian'
+    const filter = searchParams.get("filter") || "semua"; // Default ke 'semua'
     const isExport = searchParams.get("export") === "true";
     const page = parseInt(searchParams.get("page")) || 1;
     const limit = parseInt(searchParams.get("limit")) || 10;
     const skip = (page - 1) * limit;
+
+    // payload where
+    let mainWhere = {
+      tipe: "MASUK",
+    };
 
     // kondisi where
     const now = new Date();
@@ -43,19 +48,18 @@ export const GET = async (req) => {
       case "tahunan":
         tanggalMulai = new Date(now.getFullYear(), 0, 1);
         break;
+      case "semua":
       default:
-        tanggalMulai = new Date(now.setHours(0, 0, 0, 0));
-        tanggalSelesai = new Date(now.setHours(23, 59, 59, 999));
+        break;
     }
 
-    // payload where
-    const mainWhere = {
-      tipe: "MASUK",
-      createdAt: {
+    // jika tanggalMulai ada
+    if (tanggalMulai) {
+      mainWhere.createdAt = {
         gte: tanggalMulai,
         lte: tanggalSelesai,
-      },
-    };
+      };
+    }
 
     if (isExport) {
       // export sesuai filter tanggal
