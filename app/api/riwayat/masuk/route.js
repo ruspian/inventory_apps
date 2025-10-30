@@ -1,5 +1,3 @@
-// app/api/riwayat/masuk/route.js
-
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";

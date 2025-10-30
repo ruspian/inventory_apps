@@ -172,7 +172,7 @@ const StokMasukPage = () => {
 
       // sub judul
       doc.setFontSize(10);
-      doc.text(`Laporan: ${filterText}`, 14, 28);
+      doc.text(`Laporan: ${filterText || "Semua"}`, 14, 28);
       doc.text(`Tanggal Cetak: ${tanggal(new Date().toISOString())}`, 14, 32);
 
       // Buat tabelnya
@@ -183,7 +183,7 @@ const StokMasukPage = () => {
       });
 
       // Simpan file PDF
-      const namaFile = `Laporan ${filterText} Stok Masuk  - ${
+      const namaFile = `Laporan ${filterText || "Semua"} Stok Masuk  - ${
         new Date().toISOString().split("T")[0]
       }).pdf`;
       doc.save(namaFile);

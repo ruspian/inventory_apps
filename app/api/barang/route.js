@@ -97,10 +97,15 @@ export const POST = async (req) => {
 
 // AMBIL DATA BARANG
 export const GET = async (req) => {
+  const session = await auth();
+
+  if (!session || session.user.role !== "ADMIN") {
+    return NextResponse.json({ message: "Akses ditolak!" }, { status: 401 });
+  }
   try {
     const { searchParams } = new URL(req.url);
 
-    // 1. Ambil Query Parameter
+    // Ambil Query Parameter
     const search = searchParams.get("search") || "";
     const pageParam = searchParams.get("page"); // Cek apakah ada parameter page
     const limitParam = searchParams.get("limit"); // Cek apakah ada parameter limit
