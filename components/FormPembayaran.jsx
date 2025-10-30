@@ -1,5 +1,6 @@
 "use client";
 
+import { rupiah } from "@/lib/rupiah";
 import { useToaster } from "@/providers/ToasterProvider";
 import React, { useState, useEffect } from "react";
 
@@ -110,28 +111,34 @@ export default function FormPembayaran({
       <div className="flex justify-between items-center mb-4">
         <span className="text-lg font-medium">Total Belanja:</span>
         <span className="text-2xl font-bold text-emerald-500">
-          Rp {totalHarga.toLocaleString("id-ID")}
+          {rupiah(totalHarga)}
         </span>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <label htmlFor="uangDibayar">Uang Tunai Diterima</label>
-        <input
-          id="uangDibayar"
-          type="number"
-          value={uangDibayar || ""}
-          onChange={(e) => setUangDibayar(e.target.value)}
-          className="border p-2 rounded"
-          placeholder="Masukkan jumlah uang..."
-          disabled={isLoading}
-        />
+      <div className="flex gap-4 justify-between items-center">
+        <div className="flex gap-2 items-center">
+          <label htmlFor="uangDibayar">Uang Tunai Diterima:</label>
+          <input
+            id="uangDibayar"
+            type="number"
+            value={uangDibayar || ""}
+            onChange={(e) => setUangDibayar(e.target.value)}
+            className="border p-2 rounded"
+            placeholder="Masukkan jumlah uang..."
+            disabled={isLoading}
+          />
+        </div>
+
+        <div className="text-lg font-medium text-gray-500">
+          {Number(uangDibayar) === 0
+            ? ""
+            : `${rupiah(totalHarga)} - ${rupiah(Number(uangDibayar)) || 0}`}
+        </div>
       </div>
 
-      <div className="flex justify-between items-center mt-2">
-        <span className="text-md">Kembalian:</span>
-        <span className="text-lg font-medium">
-          Rp {kembalian.toLocaleString("id-ID")}
-        </span>
+      <div className="flex justify-between gap-2 items-center mt-2">
+        <span className="text-md">Kembalian: </span>
+        <span className="text-lg font-medium">{rupiah(kembalian)}</span>
       </div>
 
       <button
@@ -139,7 +146,7 @@ export default function FormPembayaran({
         className="w-full bg-emerald-500 text-white p-3 rounded mt-6 font-bold disabled:bg-neutral-400"
         disabled={isLoading || totalHarga === 0}
       >
-        {isLoading ? "Memproses..." : "Selesaikan Transaksi"}
+        {isLoading ? "Tunggu Sebentar..." : "Bayar Sekarang"}
       </button>
     </form>
   );

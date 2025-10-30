@@ -1,6 +1,11 @@
 import DashboardClient from "@/components/DashboardClient";
 import { getDashboardServerData } from "@/lib/data";
 
+export const metadata = {
+  title: "Dashboard",
+  description: "Dashboard aplikasi inventory",
+};
+
 const DashboardPage = async () => {
   let data = null;
   let error = null;

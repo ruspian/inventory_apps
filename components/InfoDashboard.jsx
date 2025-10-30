@@ -1,23 +1,24 @@
 import { rupiah } from "@/lib/rupiah";
-import { BookMinus, BookUser, BookX } from "lucide-react";
 import React from "react";
+import { HiDocumentCurrencyDollar } from "react-icons/hi2";
+import { FaChartSimple, FaSackDollar } from "react-icons/fa6";
 
 const BadgeDashboard = ({ infoData }) => {
   const items = [
     {
-      icon: <BookUser size={50} />,
+      icon: <HiDocumentCurrencyDollar size={50} />,
       title: "Omset Hari Ini",
       count: rupiah(infoData.omset),
       sub: "",
     },
     {
-      icon: <BookX size={50} />,
+      icon: <FaSackDollar size={50} />,
       title: "Profit Hari Ini",
       count: rupiah(infoData.profit),
       sub: "",
     },
     {
-      icon: <BookMinus size={50} />,
+      icon: <FaChartSimple size={50} />,
       title: "Jumlah Transaksi Hari Ini",
       count: infoData.transaksi,
       sub: "Barang",
