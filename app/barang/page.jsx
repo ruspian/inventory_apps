@@ -64,6 +64,8 @@ const DataBarangPage = () => {
         title: "Error",
         message: error.message,
         variant: "error",
+        duration: 5000,
+        position: "top-center",
       });
     } finally {
       setIsLoading(false);

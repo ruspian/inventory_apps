@@ -143,6 +143,19 @@ export const GET = async (req) => {
         }),
       ]);
 
+      // Jika tidak ada data yang ditemukan saat pencarian
+      if (totalCount === 0 && search !== "") {
+        // Hanya jika user sedang mencari
+        return NextResponse.json(
+          {
+            message: "Data tidak ditemukan!",
+            data: [], // Kirim array kosong
+            totalCount: 0,
+          },
+          { status: 200 } // Status 200 OK, karena query-nya berhasil (meski hasilnya 0)
+        );
+      }
+
       // Kembalikan data pagination
       return NextResponse.json(
         {
@@ -162,6 +175,18 @@ export const GET = async (req) => {
           nama: "asc",
         },
       });
+
+      if (allBarang.length === 0 && search !== "") {
+        // Hanya jika user sedang mencari
+        return NextResponse.json(
+          {
+            message: "Data tidak ditemukan!",
+            data: [], // Kirim array kosong
+            totalCount: 0,
+          },
+          { status: 200 }
+        );
+      }
 
       // Kembalikan semua data
       return NextResponse.json(

@@ -42,6 +42,17 @@ export const GET = async (req) => {
         }),
       ]);
 
+      if (totalCount === 0 && search !== "") {
+        return NextResponse.json(
+          {
+            message: "Kategori tidak ditemukan!",
+            data: [],
+            totalCount: 0,
+          },
+          { status: 200 }
+        );
+      }
+
       // Kembalikan data pagination
       return NextResponse.json(
         {
@@ -55,6 +66,18 @@ export const GET = async (req) => {
         where: whereClause,
         orderBy: { nama: "asc" },
       });
+
+      // Jika tidak ada data kategori
+      if (allKategori.length === 0 && search !== "") {
+        return NextResponse.json(
+          {
+            message: "Kategori tidak ditemukan!",
+            data: [],
+            totalCount: 0,
+          },
+          { status: 200 }
+        );
+      }
 
       return NextResponse.json(
         {
