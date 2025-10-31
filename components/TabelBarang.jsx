@@ -8,10 +8,8 @@ import {
 } from "@/components/ui/table";
 import { rupiah } from "@/lib/rupiah";
 import { Button } from "./ui/button";
-import { MdDeleteOutline } from "react-icons/md";
 import EditDataBarang from "./EditDataBarang";
 import { useState } from "react";
-import DeleteBarang from "./DeleteBarang";
 
 export default function TabelBarang({
   dataBarang,
@@ -21,8 +19,6 @@ export default function TabelBarang({
   kategoriData,
   toaster,
   onSuccess,
-  openDelete,
-  setOpenDelete,
 }) {
   const [idBarang, setIdBarang] = useState("");
   return (
@@ -71,15 +67,6 @@ export default function TabelBarang({
                   >
                     {icon}
                   </Button>
-                  <Button
-                    className={`flex gap-2 items-center text-white text-sm rounded-sm px-2 py-1 cursor-pointer bg-red-500 hover:bg-red-600`}
-                    onClick={() => {
-                      setOpenDelete(!openDelete);
-                      setIdBarang(barang.id);
-                    }}
-                  >
-                    <MdDeleteOutline className="size-4" />
-                  </Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -92,17 +79,6 @@ export default function TabelBarang({
           open={openEdit}
           setOpen={setOpenEdit}
           kategoriData={kategoriData}
-          idBarang={idBarang}
-          toaster={toaster}
-          onSuccess={onSuccess}
-          dataBarang={dataBarang}
-        />
-      )}
-
-      {openDelete && (
-        <DeleteBarang
-          open={openDelete}
-          setOpen={setOpenDelete}
           idBarang={idBarang}
           toaster={toaster}
           onSuccess={onSuccess}

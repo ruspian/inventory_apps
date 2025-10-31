@@ -18,7 +18,6 @@ const ITEM_PER_HALAMAN = 10; // Samakan dengan 'limit' di API
 const DataBarangPage = () => {
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
-  const [openDelete, setOpenDelete] = useState(false);
   const [kategoriData, setKategoriData] = useState([]);
   const [dataBarang, setDataBarang] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
@@ -156,8 +155,6 @@ const DataBarangPage = () => {
           dataBarang={dataBarang}
           openEdit={openEdit}
           setOpenEdit={setOpenEdit}
-          openDelete={openDelete}
-          setOpenDelete={setOpenDelete}
           icon={<MdModeEdit className="size-4" />}
           kategoriData={kategoriData}
           toaster={toaster}
