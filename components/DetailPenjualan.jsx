@@ -13,13 +13,9 @@ const DetailPenjualan = ({
   idPenjualan,
   dataLaporanPenjualan,
 }) => {
-  console.log("dataLaporanPenjualan", dataLaporanPenjualan);
-
   const findPenjualanById = dataLaporanPenjualan.find(
     (penjualan) => penjualan.id === idPenjualan
   );
-
-  console.log("findPenjualanById", findPenjualanById);
 
   return (
     <div className="flex gap-2 justify-center">

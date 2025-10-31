@@ -129,10 +129,20 @@ export const POST = async (req) => {
 // AMBIL DATA PENJUALAN
 
 export const GET = async (req) => {
+  const session = await auth();
+
+  if (!session || session.user.role !== "ADMIN") {
+    return NextResponse.json({ message: "Akses ditolak!" }, { status: 401 });
+  }
+
   try {
     // ambil parameter filter dari query
     const { searchParams } = new URL(req.url);
-    const filter = searchParams.get("filter");
+    const filter = searchParams.get("filter") || "semua";
+    const isExport = searchParams.get("export") === "true";
+    const page = parseInt(searchParams.get("page")) || 1;
+    const limit = parseInt(searchParams.get("limit")) || 10;
+    const skip = (page - 1) * limit;
 
     const now = new Date();
     let tanggalMulai;
@@ -161,36 +171,62 @@ export const GET = async (req) => {
         // Mulai dari 1 Januari tahun ini
         tanggalMulai = new Date(now.getFullYear(), 0, 1);
         break;
+      case "semua":
       default:
-        // Default ke Hari Ini jika filter tidak valid
-        tanggalMulai = new Date(now.setHours(0, 0, 0, 0));
-        tanggalSelesai = new Date(now.setHours(23, 59, 59, 999));
+        break;
     }
 
-    // Buat klausa where untuk Prisma
-    const whereClause = {
+    const mainWhere = {
       createdAt: {
-        gte: tanggalMulai, // <-- 'gte' = Greater Than or Equal
-        lte: tanggalSelesai, // <-- 'lte' = Less Than or Equal
+        gte: tanggalMulai,
+        lte: tanggalSelesai,
       },
     };
 
-    // Ambil data penjualan berdasarkan whereClause
-    const laporanPenjualan = await prisma.penjualan.findMany({
-      where: whereClause,
-      include: {
-        detail: {
-          include: {
-            barang: true,
+    if (isExport) {
+      const dataExport = await prisma.penjualan.findMany({
+        where: mainWhere,
+        include: {
+          detail: {
+            include: {
+              barang: true,
+            },
           },
         },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
 
-    return NextResponse.json(laporanPenjualan, { status: 200 });
+      return NextResponse.json({ data: dataExport }, { status: 200 });
+    }
+
+    // Ambil data penjualan berdasarkan whereClause
+    const [laporanPenjualan, totalCount] = await prisma.$transaction([
+      prisma.penjualan.findMany({
+        where: mainWhere,
+        include: {
+          detail: {
+            include: {
+              barang: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: limit,
+        skip: skip,
+      }),
+      prisma.penjualan.count({
+        where: mainWhere,
+      }),
+    ]);
+
+    return NextResponse.json(
+      { data: laporanPenjualan, totalCount: totalCount },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Gagal mengambil laporan penjualan:", error);
     return NextResponse.json(
