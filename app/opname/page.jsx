@@ -238,14 +238,7 @@ const OpnamePage = () => {
       </div>
 
       <div className="">
-        <TabelOpname
-          dataStokOpname={dataStokOpname}
-          openEdit={openEdit}
-          setOpenEdit={setOpenEdit}
-          toaster={toaster}
-          onSuccess={fetchData}
-          dataBarang={dataBarang}
-        />
+        <TabelOpname dataStokOpname={dataStokOpname} />
 
         {dataStokOpname.length > 0 && (
           <Pagination
@@ -261,7 +254,7 @@ const OpnamePage = () => {
       {openAdd && (
         <TambahOpname
           toaster={toaster}
-          onSuccess={fetchData}
+          onSuccess={fetchStokOpname}
           open={openAdd}
           setOpen={setOpenAdd}
           dataBarang={dataBarang}

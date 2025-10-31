@@ -12,15 +12,7 @@ import EditSupplier from "./EditSupplier";
 import DeleteSupplier from "./DeleteSupplier";
 import { tanggal } from "@/lib/tanggal";
 
-export default function TabelOpname({
-  dataStokOpname,
-  openEdit,
-  setOpenEdit,
-  toaster,
-  onSuccess,
-  openDelete,
-  setOpenDelete,
-}) {
+export default function TabelOpname({ dataStokOpname }) {
   return (
     <div className="">
       <div className="overflow-x-auto rounded-sm border border-neutral-200 bg-background">
@@ -74,28 +66,6 @@ export default function TabelOpname({
           </TableBody>
         </Table>
       </div>
-
-      {openEdit && (
-        <EditSupplier
-          open={openEdit}
-          setOpen={setOpenEdit}
-          dataSupplier={dataSupplier}
-          idSupplier={idSupplier}
-          toaster={toaster}
-          onSuccess={onSuccess}
-        />
-      )}
-
-      {openDelete && (
-        <DeleteSupplier
-          open={openDelete}
-          setOpen={setOpenDelete}
-          idSupplier={idSupplier}
-          toaster={toaster}
-          onSuccess={onSuccess}
-          dataSupplier={dataSupplier}
-        />
-      )}
     </div>
   );
 }
