@@ -298,16 +298,3 @@ export const SidebarLink = ({ className, ...props }) => {
     </div>
   );
 };
-
-// jangan tampilkan sidebar di halaman tertentu
-export const SidebarWrapper = ({ children }) => {
-  const pathname = usePathname();
-  const noSidebarRoutes = ["/", "/signin", "/signup"];
-  const showSidebar = !noSidebarRoutes.includes(pathname);
-
-  if (!showSidebar) {
-    return null; // sembunyikan sidebar
-  }
-
-  return <Sidebar>{children}</Sidebar>;
-};
