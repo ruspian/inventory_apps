@@ -144,7 +144,7 @@ const LaporanPage = () => {
 
       // Tambahkan Judul ke PDF
       doc.setFontSize(18);
-      doc.text("LAPORAN STOK MASUK", pageCenter, 20, { align: "center" });
+      doc.text("LAPORAN PENJUALAN", pageCenter, 20, { align: "center" });
 
       // sub judul
       doc.setFontSize(10);

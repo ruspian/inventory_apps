@@ -9,17 +9,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { tanggal } from "@/lib/tanggal";
-import EditStokMasuk from "./EditStokMasuk";
 
-export default function TabelRiwayatStok({
-  dataRiwayatStok,
-  openEdit,
-  setOpenEdit,
-  toaster,
-  onSuccess,
-  dataBarang,
-  dataSupplier,
-}) {
+export default function TabelRiwayatStok({ dataRiwayatStok }) {
   return (
     <div className="">
       <div className="overflow-x-auto rounded-sm border border-neutral-200 bg-background">
@@ -73,17 +64,6 @@ export default function TabelRiwayatStok({
           </TableBody>
         </Table>
       </div>
-
-      {openEdit && (
-        <EditStokMasuk
-          open={openEdit}
-          setOpen={setOpenEdit}
-          toaster={toaster}
-          dataSupplier={dataSupplier}
-          onSuccess={onSuccess}
-          dataBarang={dataBarang}
-        />
-      )}
     </div>
   );
 }

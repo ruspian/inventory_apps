@@ -6,8 +6,6 @@ import TabelOpname from "@/components/TabelOpname";
 import TambahOpname from "@/components/TambahOpname";
 import { Button } from "@/components/ui/button";
 import {
-  getBarang,
-  getRiwayat,
   getRiwayatOpname,
   getRiwayatOpnameForExport,
   getSemuaBarang,
@@ -164,7 +162,7 @@ const OpnamePage = () => {
 
       // Tambahkan Judul ke PDF
       doc.setFontSize(18);
-      doc.text("LAPORAN STOK MASUK", pageCenter, 20, { align: "center" });
+      doc.text("LAPORAN STOK OPNAME", pageCenter, 20, { align: "center" });
 
       // sub judul
       doc.setFontSize(10);

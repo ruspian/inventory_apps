@@ -43,6 +43,8 @@ const StokMasukPage = () => {
 
   const fetchStokMasuk = useCallback(async () => {
     try {
+      setIsLoading(true);
+
       const stokMasuk = await getRiwayatMasuk(
         filter,
         currentPage,
@@ -59,14 +61,14 @@ const StokMasukPage = () => {
         duration: 5000,
         position: "top-center",
       });
+    } finally {
+      setIsLoading(false);
     }
   }, [filter, currentPage, toaster]);
 
   // gunakan usecallback agar tidak terjadi loop tak berujung
   const fetchData = useCallback(async () => {
     try {
-      setIsLoading(true);
-
       const [barang, supplier] = await Promise.all([
         getSemuaBarang(),
         getSupplier(),
@@ -82,8 +84,6 @@ const StokMasukPage = () => {
         duration: 5000,
         position: "top-center",
       });
-    } finally {
-      setIsLoading(false);
     }
   }, [toaster]);
 
