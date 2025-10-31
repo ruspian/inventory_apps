@@ -190,11 +190,6 @@ export const SidebarLink = ({ className, ...props }) => {
       href: "/riwayat",
       icon: <CiSignpostDuo1 size={30} />,
     },
-    {
-      label: "Manajemen User",
-      href: "/user",
-      icon: <CiUser size={30} />,
-    },
   ];
   return (
     <div className="flex flex-col justify-between h-[550px] md:h-[650px]">

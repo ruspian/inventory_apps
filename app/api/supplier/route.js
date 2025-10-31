@@ -4,6 +4,12 @@ import { auth } from "@/lib/auth";
 
 // AMBIL DATA SUPPLIER
 export const GET = async (req) => {
+  const session = await auth();
+
+  if (!session || session.user.role !== "ADMIN") {
+    return NextResponse.json({ message: "Akses ditolak!" }, { status: 401 });
+  }
+
   try {
     const allSupplier = await prisma.supplier.findMany();
 

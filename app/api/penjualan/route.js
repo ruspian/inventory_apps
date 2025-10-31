@@ -105,7 +105,7 @@ export const POST = async (req) => {
       return struk; // Kembalikan data struk jika transaksi sukses
     });
 
-    // 5. Transaksi Sukses
+    //  Transaksi Sukses
     return NextResponse.json(
       { message: "Transaksi berhasil disimpan!", data: penjualan },
       { status: 201 }
