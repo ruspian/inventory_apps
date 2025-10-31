@@ -12,6 +12,7 @@ const DashboardClient = ({ initialData, error }) => {
   const toaster = useToaster();
 
   useEffect(() => {
+    // Jika ada error
     if (error) {
       toaster.current?.show({
         title: "Error",
@@ -22,6 +23,18 @@ const DashboardClient = ({ initialData, error }) => {
       });
     }
   }, [toaster, error]);
+
+  if (error || !initialData) {
+    return (
+      <div>
+        <Breadcrumb />
+        <div className="mt-8 p-4 border rounded-sm bg-red-50 text-red-700">
+          <h3 className="font-bold">Gagal memuat data dashboard.</h3>
+          <p>{error || "Terjadi kesalahan tidak diketahui."}</p>
+        </div>
+      </div>
+    );
+  }
 
   const infoData = {
     omset: initialData?.omsetHariIni || 0,
