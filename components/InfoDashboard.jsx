@@ -4,22 +4,24 @@ import { HiDocumentCurrencyDollar } from "react-icons/hi2";
 import { FaChartSimple, FaSackDollar } from "react-icons/fa6";
 
 const BadgeDashboard = ({ infoData }) => {
+  console.log("infoData", infoData);
+
   const items = [
     {
       icon: <HiDocumentCurrencyDollar size={50} />,
-      title: "Omset Hari Ini",
+      title: "Omset Bulan Ini",
       count: rupiah(infoData.omset),
       sub: "",
     },
     {
       icon: <FaSackDollar size={50} />,
-      title: "Profit Hari Ini",
+      title: "Profit Bulan Ini",
       count: rupiah(infoData.profit),
       sub: "",
     },
     {
       icon: <FaChartSimple size={50} />,
-      title: "Jumlah Transaksi Hari Ini",
+      title: "Jumlah Transaksi Bulan Ini",
       count: infoData.transaksi,
       sub: "Barang",
     },

@@ -37,9 +37,9 @@ const DashboardClient = ({ initialData, error }) => {
   }
 
   const infoData = {
-    omset: initialData?.omsetHariIni || 0,
-    profit: initialData?.profitHariIni || 0,
-    transaksi: initialData?.jumlahTransaksiHariIni || 0,
+    omset: initialData?.omsetBulanIni || 0,
+    profit: initialData?.profitBulanIni || 0,
+    transaksi: initialData?.jumlahTransaksiBulanIni || 0,
   };
 
   return (
