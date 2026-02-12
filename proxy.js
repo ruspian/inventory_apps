@@ -1,13 +1,22 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 
 // fungsi middleware utama
-export default auth(async (req) => {
-  const session = req.auth;
+export default proxy(async (req) => {
+  const token = await getTokens({
+    req,
+    secret: process.env.AUTH_SECRET,
+    secureCookie: process.env.NODE_ENV === "production",
+    salt:
+      process.env.NODE_ENV === "production"
+        ? "__Secure-authjs.session-token"
+        : "authjs.session-token",
+  });
+
+  const session = !!token;
   const path = req.nextUrl.pathname;
 
-  const isLoggedIn = !!session?.user; // cek apakah user sudah login
-  const isAdmin = session?.user?.role === "ADMIN"; // cek apakah user admin
+  const isLoggedIn = !!session?.user;
+  const isAdmin = session?.user?.role === "ADMIN";
 
   // Daftar halaman yang HANYA boleh diakses ADMIN
   const adminPages = [
@@ -21,42 +30,33 @@ export default auth(async (req) => {
     "/riwayat",
   ];
 
-  // Cek apakah user mencoba akses halaman admin
   if (adminPages.some((p) => path.startsWith(p))) {
     if (!isLoggedIn) {
-      // Kalo belum login, arahkan ke login
       return NextResponse.redirect(new URL("/", req.url));
     }
     if (!isAdmin) {
-      // Kalo sudah login tapi bukan admin, arahkan ke kasir
       return NextResponse.redirect(new URL("/kasir", req.url));
     }
-    // Kalo login DAN admin, biarkan masuk
+
     return NextResponse.next();
   }
 
-  // halaman kasir Boleh diakses ADMIN atau USER
   if (path.startsWith("/kasir")) {
     if (!isLoggedIn) {
-      // Kalo belum login, arahkan ke login
       return NextResponse.redirect(new URL("/", req.url));
     }
-    // Kalo login apapun role-nya, biarkan masuk
+
     return NextResponse.next();
   }
 
-  // Halaman Login
   if (path === "/") {
     if (isLoggedIn) {
-      // Kalo UDAH login, jangan biarin liat halaman login lagi
       if (isAdmin) {
         return NextResponse.redirect(new URL("/dashboard", req.url));
       } else {
-        // Kalo role-nya USER, arahkan ke kasir
         return NextResponse.redirect(new URL("/kasir", req.url));
       }
     }
-    // Kalo belum login, biarkan di halaman login
     return NextResponse.next();
   }
 

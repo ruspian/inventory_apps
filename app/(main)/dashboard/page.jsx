@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import DashboardClient from "@/components/DashboardClient";
 import { getDashboardServerData } from "@/lib/data";
 
