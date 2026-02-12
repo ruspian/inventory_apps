@@ -1,24 +1,17 @@
 import { NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
 
-// fungsi middleware utama
-export default proxy(async (req) => {
-  const token = await getTokens({
+export default async function middleware(req) {
+  const token = await getToken({
     req,
     secret: process.env.AUTH_SECRET,
-    secureCookie: process.env.NODE_ENV === "production",
-    salt:
-      process.env.NODE_ENV === "production"
-        ? "__Secure-authjs.session-token"
-        : "authjs.session-token",
   });
 
-  const session = !!token;
   const path = req.nextUrl.pathname;
+  const isLoggedIn = !!token;
+  const isAdmin = token?.role === "ADMIN";
 
-  const isLoggedIn = !!session?.user;
-  const isAdmin = session?.user?.role === "ADMIN";
-
-  // Daftar halaman yang HANYA boleh diakses ADMIN
+  //  Daftar halaman khusus ADMIN
   const adminPages = [
     "/dashboard",
     "/barang",
@@ -30,51 +23,29 @@ export default proxy(async (req) => {
     "/riwayat",
   ];
 
-  if (adminPages.some((p) => path.startsWith(p))) {
-    if (!isLoggedIn) {
-      return NextResponse.redirect(new URL("/", req.url));
-    }
-    if (!isAdmin) {
-      return NextResponse.redirect(new URL("/kasir", req.url));
-    }
+  const isAccessingAdminPage = adminPages.some((p) => path.startsWith(p));
+  const isAccessingKasirPage = path.startsWith("/kasir");
 
-    return NextResponse.next();
+  // Jika belum login dan coba akses halaman terproteksi
+  if (!isLoggedIn && (isAccessingAdminPage || isAccessingKasirPage)) {
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
-  if (path.startsWith("/kasir")) {
-    if (!isLoggedIn) {
-      return NextResponse.redirect(new URL("/", req.url));
-    }
-
-    return NextResponse.next();
+  // Jika sudah login tapi coba akses Login Page ("/")
+  if (isLoggedIn && path === "/") {
+    return NextResponse.redirect(
+      new URL(isAdmin ? "/dashboard" : "/kasir", req.url),
+    );
   }
 
-  if (path === "/") {
-    if (isLoggedIn) {
-      if (isAdmin) {
-        return NextResponse.redirect(new URL("/dashboard", req.url));
-      } else {
-        return NextResponse.redirect(new URL("/kasir", req.url));
-      }
-    }
-    return NextResponse.next();
+  // Jika user biasa  coba akses halaman ADMIN
+  if (isLoggedIn && isAccessingAdminPage && !isAdmin) {
+    return NextResponse.redirect(new URL("/kasir", req.url));
   }
 
-  // public routes
   return NextResponse.next();
-});
+}
 
-// Config Matcher
-// filter agar middleware tidak usah jalan di file gambar, statis, atau API.
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };
